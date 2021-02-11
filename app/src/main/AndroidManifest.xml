@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadStatistics"
         tools:ignore="AllowBackup">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".ui.NavMainActivity"
+            android:label="@string/title_activity_bottom_nav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

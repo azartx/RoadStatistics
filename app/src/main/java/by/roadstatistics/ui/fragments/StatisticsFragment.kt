@@ -1,4 +1,4 @@
-package by.roadstatistics.fragments
+package by.roadstatistics.ui.fragments
 
 import androidx.fragment.app.Fragment
 import by.roadstatistics.R
