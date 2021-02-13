@@ -4,6 +4,8 @@
     package="by.roadstatistics">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -12,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadStatistics"
         tools:ignore="AllowBackup">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA_mi5eJTos9bGng9GD4CNuGWM4PrroNbc" />
+
         <activity
             android:name=".ui.NavMainActivity"
             android:label="@string/title_activity_bottom_nav">

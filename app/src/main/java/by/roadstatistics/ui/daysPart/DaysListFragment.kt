@@ -1,4 +1,4 @@
-package by.roadstatistics.ui.fragments
+package by.roadstatistics.ui.daysPart
 
 import android.os.Bundle
 import android.view.View
