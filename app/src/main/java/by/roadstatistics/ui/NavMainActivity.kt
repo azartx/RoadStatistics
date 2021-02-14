@@ -1,13 +1,17 @@
 package by.roadstatistics.ui
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.add
 import androidx.fragment.app.replace
 import by.roadstatistics.R
 import by.roadstatistics.adapters.SpinnerAdapter
+import by.roadstatistics.services.LocService
 import by.roadstatistics.ui.daysPart.DaysListFragment
 import by.roadstatistics.ui.fragments.GlobalMapFragment
 import by.roadstatistics.ui.mapPart.MapGeneralFragment
@@ -26,10 +30,22 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         setSupportActionBar(findViewById(R.id.toolbar_actionbar))
         setToolbarTitle("Список дней")
 
-        val lad = SpinnerAdapter(context = this, R.id.dayOfWeek, listOf("qwer", "qwer", "qwer", "qasdwer" ))
+        askLocationPermission()
+
+        val lad = SpinnerAdapter(
+            context = this,
+            R.id.dayOfWeek,
+            listOf("qwer", "qwer", "qwer", "qasdwer")
+        )
         findViewById<Spinner>(R.id.action_bar_spinner).adapter = lad
 
-lad.notifyDataSetChanged()
+        lad.notifyDataSetChanged()
+
+        val inte = Intent(this, LocService::class.java)
+            startService(inte)
+
+
+
 
         supportFragmentManager.beginTransaction()
             .add<DaysListFragment>(R.id.nav_host_fragment)
@@ -88,4 +104,10 @@ lad.notifyDataSetChanged()
         //menuInflater.inflate(R.menu.left_toolbar_menu, menu)
         return true
     }*/
+
+    private fun askLocationPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
+    }
+
+
 }
