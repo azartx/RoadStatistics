@@ -10,15 +10,16 @@
         style="@style/Toolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Spinner
-        android:id="@+id/action_bar_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        <Spinner
+            android:id="@+id/action_bar_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="25dp" />
 
-</androidx.appcompat.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import by.roadstatistics.R
 
-class SpinnerAdapter(context: Context, resId: Int, var daysList: List<String>) :
+class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<String>) :
     ArrayAdapter<String>(context, resId, daysList) {
 
     fun addAll(daysList: List<String>) {
@@ -26,7 +26,7 @@ class SpinnerAdapter(context: Context, resId: Int, var daysList: List<String>) :
 
     private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup) =
         LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_spiner_row, parent, false).apply {
+            .inflate(R.layout.item_spiner_row_settings, parent, false).apply {
 
                 this.findViewById<TextView>(R.id.dayOfWeek).text = daysList[position]
 
