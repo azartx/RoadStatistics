@@ -8,11 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import by.roadstatistics.R
 
-class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<String>) :
-    ArrayAdapter<String>(context, resId, daysList) {
+class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<Int>) :
+    ArrayAdapter<Int>(context, resId, daysList) {
 
-    fun addAll(daysList: List<String>) {
-        this.daysList = daysList as MutableList<String>
+    fun addAll(daysList: List<Int>) {
+        this.daysList = daysList as MutableList<Int>
         notifyDataSetChanged()
     }
 
@@ -28,7 +28,7 @@ class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<St
         LayoutInflater.from(parent.context)
             .inflate(R.layout.item_spiner_row_settings, parent, false).apply {
 
-                this.findViewById<TextView>(R.id.dayOfWeek).text = daysList[position]
+                this.findViewById<TextView>(R.id.dayOfWeek).text = daysList[position].toString()
 
             }
 }

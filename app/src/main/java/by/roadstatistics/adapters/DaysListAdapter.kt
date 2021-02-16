@@ -3,11 +3,11 @@ package by.roadstatistics.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import by.roadstatistics.database.Day
+import by.roadstatistics.database.CordInfo
 import by.roadstatistics.databinding.ItemRecycleViewBinding
 
 class DaysListAdapter : RecyclerView.Adapter<DaysListAdapter.DaysViewHolder>() {
-     var daysList: List<Day> = emptyList()
+     var daysList: List<CordInfo> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DaysViewHolder(
         ItemRecycleViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )

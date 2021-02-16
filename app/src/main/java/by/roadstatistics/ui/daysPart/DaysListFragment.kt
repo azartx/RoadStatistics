@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.roadstatistics.R
 import by.roadstatistics.adapters.DaysListAdapter
-import by.roadstatistics.database.Day
+import by.roadstatistics.database.CordInfo
 import by.roadstatistics.databinding.FragmentDaysListBinding
 
 // спикос на основе ресайклера с днями и выбором месяца
@@ -27,7 +27,7 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
             layoutManager = LinearLayoutManager(context)
         }
 
-        localAdapter.daysList = listOf(Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2), Day(123,123,123F,123.2,123.2))
+        localAdapter.daysList = listOf(CordInfo(123,123,123,123,123, 123F, 123F))
 
 
     }

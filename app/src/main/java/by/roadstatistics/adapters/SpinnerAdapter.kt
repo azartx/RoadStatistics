@@ -31,4 +31,9 @@ class SpinnerAdapter(context: Context, resId: Int, var daysList: List<String>) :
                 this.findViewById<TextView>(R.id.dayOfWeek).text = daysList[position]
 
             }
+
+    interface OnItemCheckListener {
+        fun onItemCheck()
+    }
+
 }
