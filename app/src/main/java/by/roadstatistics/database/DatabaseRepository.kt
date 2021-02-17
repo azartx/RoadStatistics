@@ -23,4 +23,10 @@ class DatabaseRepository(context: Context) {
         }
     }
 
+    suspend fun getMonthList(currentYear: Int): List<Int> {
+        return withContext(threadIO) {
+            return@withContext database.getDaysDAO().getYearMonths(currentYear)
+        }
+    }
+
 }

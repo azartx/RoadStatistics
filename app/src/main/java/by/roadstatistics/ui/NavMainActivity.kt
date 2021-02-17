@@ -3,12 +3,12 @@ package by.roadstatistics.ui
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.add
 import androidx.fragment.app.replace
+import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.adapters.SpinnerAdapter
 import by.roadstatistics.services.LocService
@@ -24,25 +24,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
+    private lateinit var viewModelProvider: ViewModelProvider
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_nav)
         setSupportActionBar(findViewById(R.id.toolbar_actionbar))
         setToolbarTitle("Список дней")
+        viewModelProvider = ViewModelProvider(this)
+        val spinner: Spinner = findViewById(R.id.action_bar_spinner)
 
         askLocationPermission()
 
-        val lad = SpinnerAdapter(
-            context = this,
-            R.id.dayOfWeek,
-            listOf("qwer", "qwer", "qwer", "qasdwer")
-        )
-        findViewById<Spinner>(R.id.action_bar_spinner).adapter = lad
+        initSpinner(spinner)
 
-        lad.notifyDataSetChanged()
 
         val inte = Intent(this, LocService::class.java)
-            startService(inte)
+        startService(inte)
 
 
 
@@ -81,6 +79,19 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                 else -> false
             }
         }
+
+    }
+
+    private fun initSpinner(spinner: Spinner) {
+        viewModelProvider.get(ActivityViewModel::class.java).also { viewModel ->
+            viewModel.monthListLiveData.observe(this, { list ->
+                val monthsString = MonthMapper(list, applicationContext).monthsToString()
+                val spinnerAdapter = SpinnerAdapter(this, R.id.dayOfWeek, monthsString)
+                spinner.adapter = spinnerAdapter
+            })
+            viewModel.getMonthList(applicationContext)
+        }
+
 
     }
 

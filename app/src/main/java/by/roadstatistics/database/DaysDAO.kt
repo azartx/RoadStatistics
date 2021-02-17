@@ -14,4 +14,8 @@ interface DaysDAO {
     @Query("SELECT DISTINCT year FROM CordInfo")
     fun getYearList(): List<Int>
 
+    // забираем все месяца без копий и возвращаем списком
+    @Query("SELECT DISTINCT month FROM CordInfo WHERE year = :year")
+    fun getYearMonths(year: Int): List<Int>
+
 }
