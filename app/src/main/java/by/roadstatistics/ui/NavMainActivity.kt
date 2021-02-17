@@ -3,6 +3,7 @@ package by.roadstatistics.ui
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -38,12 +39,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
         initSpinner(spinner)
 
-
-        val inte = Intent(this, LocService::class.java)
-        startService(inte)
-
-
-
+        startService(Intent(this, LocService::class.java))
 
         supportFragmentManager.beginTransaction()
             .add<DaysListFragment>(R.id.nav_host_fragment)
@@ -54,6 +50,8 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         bn.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_days -> {
+                    initSpinner(spinner)
+                    spinner.visibility = View.VISIBLE
                     supportFragmentManager.beginTransaction()
                         .replace<DaysListFragment>(R.id.nav_host_fragment, "", null)
                         .commit()
@@ -61,6 +59,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     true
                 }
                 R.id.nav_map_global -> {
+                    spinner.visibility = View.INVISIBLE
                     supportFragmentManager.beginTransaction()
                         .replace<MapGeneralFragment>(R.id.nav_host_fragment, "", null)
                         .addToBackStack(null)
@@ -69,6 +68,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     true
                 }
                 R.id.nav_settings -> {
+                    spinner.visibility = View.INVISIBLE
                     supportFragmentManager.beginTransaction()
                         .replace<SettingsFragment>(R.id.nav_host_fragment, "", null)
                         .addToBackStack(null)
@@ -91,8 +91,6 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
             })
             viewModel.getMonthList(applicationContext)
         }
-
-
     }
 
     private fun setToolbarTitle(title: String) {

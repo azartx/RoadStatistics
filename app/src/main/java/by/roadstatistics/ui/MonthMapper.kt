@@ -13,7 +13,7 @@ class MonthMapper(var list: List<Int>, var context: Context) {
         return newList
     }
 
-    fun map(month: Int): String = when (month) {
+    private fun map(month: Int): String = when (month) {
         1 -> context.getString(R.string.january)
         2 -> context.getString(R.string.february)
         3 -> context.getString(R.string.march)

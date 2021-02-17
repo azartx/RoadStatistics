@@ -1,12 +1,14 @@
 package by.roadstatistics.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import by.roadstatistics.R
+import by.roadstatistics.utils.Constants.CURRENT_YEAR
 
 class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<Int>) :
     ArrayAdapter<Int>(context, resId, daysList) {
@@ -28,7 +30,15 @@ class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<In
         LayoutInflater.from(parent.context)
             .inflate(R.layout.item_spiner_row_settings, parent, false).apply {
 
-                this.findViewById<TextView>(R.id.dayOfWeek).text = daysList[position].toString()
+                val textView = this.findViewById<TextView>(R.id.dayOfWeek)
+
+                    textView.text = daysList[position].toString()
+
+                this.setOnClickListener {
+                    val yearText: String = textView.text.toString()
+                    CURRENT_YEAR = yearText.toInt()
+                    Log.i("FFFF", CURRENT_YEAR.toString())
+                }
 
             }
 }
