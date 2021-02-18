@@ -37,8 +37,8 @@ class SettingsSpinnerAdapter(context: Context, resId: Int, var daysList: List<In
                 this.setOnClickListener {
                     val yearText: String = textView.text.toString()
                     CURRENT_YEAR = yearText.toInt()
-                    Log.i("FFFF", CURRENT_YEAR.toString())
                 }
 
             }
+
 }

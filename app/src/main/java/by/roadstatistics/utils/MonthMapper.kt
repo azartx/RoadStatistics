@@ -1,4 +1,4 @@
-package by.roadstatistics.ui
+package by.roadstatistics.utils
 
 import android.content.Context
 import by.roadstatistics.R

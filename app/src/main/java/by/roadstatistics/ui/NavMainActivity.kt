@@ -3,7 +3,9 @@ package by.roadstatistics.ui
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -21,11 +23,13 @@ import by.roadstatistics.utils.ChangeFragmentListener
 import by.roadstatistics.utils.Constants.FRAGMENT_DAYS_LIST
 import by.roadstatistics.utils.Constants.FRAGMENT_MAP_GENERAL
 import by.roadstatistics.utils.Constants.FRAGMENT_SETTINGS
+import by.roadstatistics.utils.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     private lateinit var viewModelProvider: ViewModelProvider
+    private lateinit var onSpinnerItemClickListener: SpinnerAdapter.OnSpinnerItemClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +41,22 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
         askLocationPermission()
 
+        onSpinnerItemClickListener = object : SpinnerAdapter.OnSpinnerItemClickListener {
+            override fun onSpinnerItemClick(month: String) {
+                Log.i("FFFF", month)
+                //viewModel.actualMonth(month, applicationContext)
+            }
+        }
+
         initSpinner(spinner)
+
 
         startService(Intent(this, LocService::class.java))
 
-        supportFragmentManager.beginTransaction()
-            .add<DaysListFragment>(R.id.nav_host_fragment)
-            .commit()
+        beginFirstFragment()
 
         val bn = findViewById<BottomNavigationView>(R.id.nav_view)
+
 
         bn.setOnNavigationItemSelectedListener {
             when (it.itemId) {
@@ -82,12 +93,25 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     }
 
+    private fun beginFirstFragment() {
+        //Bundle().putParcelableArrayList()
+
+
+        supportFragmentManager.beginTransaction()
+            .add<DaysListFragment>(R.id.nav_host_fragment, "")
+            .commit()
+    }
+
     private fun initSpinner(spinner: Spinner) {
         viewModelProvider.get(ActivityViewModel::class.java).also { viewModel ->
             viewModel.monthListLiveData.observe(this, { list ->
                 val monthsString = MonthMapper(list, applicationContext).monthsToString()
-                val spinnerAdapter = SpinnerAdapter(this, R.id.dayOfWeek, monthsString)
+
+
+
+                val spinnerAdapter = SpinnerAdapter(this, R.id.dayOfWeek, monthsString, onSpinnerItemClickListener)
                 spinner.adapter = spinnerAdapter
+
             })
             viewModel.getMonthList(applicationContext)
         }
@@ -98,7 +122,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     }
 
     override fun onFragmentChange(fragmentId: Int, bundle: Bundle?) {
-        when (fragmentId) {
+        /*when (fragmentId) {
             FRAGMENT_DAYS_LIST -> supportFragmentManager.beginTransaction()
                 .replace<DaysListFragment>(R.id.nav_host_fragment, "", bundle).commit()
             FRAGMENT_MAP_GENERAL -> supportFragmentManager.beginTransaction()
@@ -106,7 +130,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
             FRAGMENT_SETTINGS -> supportFragmentManager.beginTransaction()
                 .replace<SettingsFragment>(R.id.nav_host_fragment, "", bundle).commit()
 
-        }
+        }*/
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -117,6 +141,5 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     private fun askLocationPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
     }
-
 
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import by.roadstatistics.database.DatabaseRepository
 import by.roadstatistics.utils.Constants.CURRENT_YEAR
+import by.roadstatistics.utils.SelectedMonthMapper
 import kotlinx.coroutines.*
 
 class ActivityViewModel : ViewModel() {
@@ -17,11 +18,18 @@ class ActivityViewModel : ViewModel() {
     private val monthMutableLiveData = MutableLiveData<List<Int>>()
     var monthListLiveData: LiveData<List<Int>> = monthMutableLiveData
 
+    private val getMonthIntMutableLiveData = MutableLiveData<Int>()
+    var getMonthIntLiveData: LiveData<Int> = getMonthIntMutableLiveData
+
     fun getMonthList(context: Context) {
         databaseRepository = DatabaseRepository(context)
         mainScope.launch {
             monthMutableLiveData.value = databaseRepository.getMonthList(CURRENT_YEAR)
         }
+    }
+
+    fun actualMonth(month: String, context: Context) {
+        getMonthIntMutableLiveData.value = SelectedMonthMapper(context).getMonthNumber(month)
     }
 
 }
