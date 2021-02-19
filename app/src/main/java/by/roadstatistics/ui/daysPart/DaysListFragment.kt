@@ -29,6 +29,9 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
         viewModelProvider = ViewModelProvider(requireActivity())
         viewModelProvider.get(ActivityViewModel::class.java).also {
             it.getMonthIntLiveData.observe(viewLifecycleOwner, { month ->
+
+                Log.i("FFFF", month.toString())
+
             })
 
         }

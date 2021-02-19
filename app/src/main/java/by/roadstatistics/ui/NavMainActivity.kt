@@ -29,7 +29,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     private lateinit var viewModelProvider: ViewModelProvider
-    private lateinit var onSpinnerItemClickListener: SpinnerAdapter.OnSpinnerItemClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,15 +40,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
         askLocationPermission()
 
-        onSpinnerItemClickListener = object : SpinnerAdapter.OnSpinnerItemClickListener {
-            override fun onSpinnerItemClick(month: String) {
-                Log.i("FFFF", month)
-                //viewModel.actualMonth(month, applicationContext)
-            }
-        }
-
         initSpinner(spinner)
-
 
         startService(Intent(this, LocService::class.java))
 
@@ -93,6 +84,24 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     }
 
+    private fun spinnerItemSelectedListener(spinner: Spinner, viewModel: ActivityViewModel) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.actualMonth(parent?.getItemAtPosition(position).toString(), applicationContext)
+                Log.i("FFFF", parent?.getItemAtPosition(position).toString() + " yesss")
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //TODO("Not yet implemented")
+            }
+        }
+    }
+
     private fun beginFirstFragment() {
         //Bundle().putParcelableArrayList()
 
@@ -106,11 +115,10 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         viewModelProvider.get(ActivityViewModel::class.java).also { viewModel ->
             viewModel.monthListLiveData.observe(this, { list ->
                 val monthsString = MonthMapper(list, applicationContext).monthsToString()
-
-
-
-                val spinnerAdapter = SpinnerAdapter(this, R.id.dayOfWeek, monthsString, onSpinnerItemClickListener)
+                val spinnerAdapter = SpinnerAdapter(this, R.id.dayOfWeek, monthsString)
                 spinner.adapter = spinnerAdapter
+
+                spinnerItemSelectedListener(spinner, viewModel)
 
             })
             viewModel.getMonthList(applicationContext)
