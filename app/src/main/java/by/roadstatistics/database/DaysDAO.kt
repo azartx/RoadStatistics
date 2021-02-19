@@ -18,4 +18,7 @@ interface DaysDAO {
     @Query("SELECT DISTINCT month FROM CordInfo WHERE year = :year")
     fun getYearMonths(year: Int): List<Int>
 
+    @Query("SELECT * FROM CordInfo WHERE year = :year AND month = :month")
+    fun getMonthDaysInfo(month: Int, year: Int): List<CordInfo>
+
 }

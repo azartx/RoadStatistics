@@ -20,6 +20,7 @@ import by.roadstatistics.ui.fragments.GlobalMapFragment
 import by.roadstatistics.ui.mapPart.MapGeneralFragment
 import by.roadstatistics.ui.settingsPart.SettingsFragment
 import by.roadstatistics.utils.ChangeFragmentListener
+import by.roadstatistics.utils.Constants.CURRENT_MONTH
 import by.roadstatistics.utils.Constants.FRAGMENT_DAYS_LIST
 import by.roadstatistics.utils.Constants.FRAGMENT_MAP_GENERAL
 import by.roadstatistics.utils.Constants.FRAGMENT_SETTINGS
@@ -103,9 +104,6 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     }
 
     private fun beginFirstFragment() {
-        //Bundle().putParcelableArrayList()
-
-
         supportFragmentManager.beginTransaction()
             .add<DaysListFragment>(R.id.nav_host_fragment, "")
             .commit()

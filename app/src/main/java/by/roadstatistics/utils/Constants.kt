@@ -11,4 +11,7 @@ object Constants {
     @JvmStatic
     var CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR)
 
+    @JvmStatic
+    var CURRENT_MONTH = 0
+
 }
