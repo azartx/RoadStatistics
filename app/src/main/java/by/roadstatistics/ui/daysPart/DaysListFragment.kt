@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.roadstatistics.R
 import by.roadstatistics.adapters.DaysListAdapter
-import by.roadstatistics.database.CordInfo
 import by.roadstatistics.databinding.FragmentDaysListBinding
 import by.roadstatistics.ui.ActivityViewModel
 import by.roadstatistics.utils.Constants.CURRENT_MONTH
@@ -36,10 +35,24 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
                     CURRENT_MONTH = month
 
                     thisViewModelProvider.get(DaysViewModel::class.java).also { daysViewModel ->
-                        daysViewModel.daysLiveData.observe(viewLifecycleOwner, {
-                            Log.i("FFFF", it[0].latitude.toString())
+                        daysViewModel.dayLiveData.observe(viewLifecycleOwner, { daysOfMonthList ->
+                            Log.i("FFFF", daysOfMonthList.size.toString() + "qweqweqweqwe")
+                            if (::localAdapter.isInitialized) {
+                                localAdapter.updateList(daysOfMonthList)
+                            } else {
+                                localAdapter = DaysListAdapter()
+                                binding.recyclerView.apply {
+                                    adapter = localAdapter
+                                    layoutManager = LinearLayoutManager(context)
+                                    localAdapter.updateList(daysOfMonthList)
+                                    Log.i("FFFF", localAdapter.daysList.size.toString())
+                                }
+                            }
+
+
+
                         })
-                        daysViewModel.getMonthDaysInfo(view.context, CURRENT_MONTH, CURRENT_YEAR)
+                        daysViewModel.getDaysInMonth(view.context, CURRENT_MONTH, CURRENT_YEAR)
                     }
 
                 }
@@ -50,13 +63,8 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
 
 
 
-        localAdapter = DaysListAdapter()
-        binding.recyclerView.apply {
-            adapter = localAdapter
-            layoutManager = LinearLayoutManager(context)
-        }
 
-        localAdapter.daysList = listOf(CordInfo(123, 123, 123, 123, 123, 123F, 123F))
+
 
 
     }

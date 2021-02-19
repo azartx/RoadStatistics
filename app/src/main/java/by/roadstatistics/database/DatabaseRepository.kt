@@ -35,4 +35,10 @@ class DatabaseRepository(context: Context) {
         }
     }
 
+    suspend fun getDaysInMonth(month: Int, year: Int): List<Int> {
+        return withContext(threadIO) {
+            return@withContext database.getDaysDAO().getDaysInMonth(month, year)
+        }
+    }
+
 }
