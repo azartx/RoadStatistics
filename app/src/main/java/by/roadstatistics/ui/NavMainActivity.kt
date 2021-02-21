@@ -16,6 +16,7 @@ import by.roadstatistics.R
 import by.roadstatistics.adapters.SpinnerAdapter
 import by.roadstatistics.services.LocService
 import by.roadstatistics.ui.daysPart.DaysListFragment
+import by.roadstatistics.ui.daysPart.pickedDay.PicketDayFragment
 import by.roadstatistics.ui.fragments.GlobalMapFragment
 import by.roadstatistics.ui.mapPart.MapGeneralFragment
 import by.roadstatistics.ui.settingsPart.SettingsFragment
@@ -23,6 +24,7 @@ import by.roadstatistics.utils.ChangeFragmentListener
 import by.roadstatistics.utils.Constants.CURRENT_MONTH
 import by.roadstatistics.utils.Constants.FRAGMENT_DAYS_LIST
 import by.roadstatistics.utils.Constants.FRAGMENT_MAP_GENERAL
+import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
 import by.roadstatistics.utils.Constants.FRAGMENT_SETTINGS
 import by.roadstatistics.utils.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,6 +32,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     private lateinit var viewModelProvider: ViewModelProvider
+    private lateinit var spinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         setSupportActionBar(findViewById(R.id.toolbar_actionbar))
         setToolbarTitle("Список дней")
         viewModelProvider = ViewModelProvider(this)
-        val spinner: Spinner = findViewById(R.id.action_bar_spinner)
+        spinner = findViewById(R.id.action_bar_spinner)
 
         askLocationPermission()
 
@@ -128,15 +131,21 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     }
 
     override fun onFragmentChange(fragmentId: Int, bundle: Bundle?) {
-        /*when (fragmentId) {
+        when (fragmentId) {
             FRAGMENT_DAYS_LIST -> supportFragmentManager.beginTransaction()
                 .replace<DaysListFragment>(R.id.nav_host_fragment, "", bundle).commit()
             FRAGMENT_MAP_GENERAL -> supportFragmentManager.beginTransaction()
                 .replace<GlobalMapFragment>(R.id.nav_host_fragment, "", bundle).commit()
             FRAGMENT_SETTINGS -> supportFragmentManager.beginTransaction()
                 .replace<SettingsFragment>(R.id.nav_host_fragment, "", bundle).commit()
+            FRAGMENT_PICKET_DAY -> {
+                supportFragmentManager.beginTransaction()
+                    .replace<PicketDayFragment>(R.id.nav_host_fragment, "", bundle)
+                    .addToBackStack(null)
+                    .commit()
+            }
 
-        }*/
+        }
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {

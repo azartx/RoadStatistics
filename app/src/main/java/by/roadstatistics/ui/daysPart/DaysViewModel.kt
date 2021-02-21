@@ -22,12 +22,14 @@ class DaysViewModel : ViewModel() {
     private val daysInfoMutablyLiveData = MutableLiveData<List<CordInfo>>()
     val daysInfoLiveData: LiveData<List<CordInfo>> = daysInfoMutablyLiveData
 
+    private val dayInfoMutablyLiveData = MutableLiveData<List<CordInfo>>()
+    val dayInfoLiveData: LiveData<List<CordInfo>> = dayInfoMutablyLiveData
+
     fun getDaysInMonth(context: Context, month: Int, year: Int) {
         databaseRepository = DatabaseRepository(context)
         coroutineScope.launch {
             dayMutablyLiveData.value = databaseRepository.getDaysInMonth(month, year)
         }
-
     }
 
     fun getMonthDaysInfo(context: Context, month: Int, year: Int) {
@@ -35,7 +37,13 @@ class DaysViewModel : ViewModel() {
         coroutineScope.launch {
             daysInfoMutablyLiveData.value = databaseRepository.getMonthDaysInfo(month, year)
         }
+    }
 
+    fun getDay(context: Context, year: Int, month: Int, day: Int) {
+        databaseRepository = DatabaseRepository(context)
+        coroutineScope.launch {
+            dayInfoMutablyLiveData.value = databaseRepository.getDay(year, month, day)
+        }
     }
 
 

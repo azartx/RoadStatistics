@@ -41,4 +41,10 @@ class DatabaseRepository(context: Context) {
         }
     }
 
+    suspend fun getDay(year: Int, month: Int, day: Int): List<CordInfo> {
+        return withContext(threadIO) {
+            return@withContext database.getDaysDAO().getDay(year, month, day)
+        }
+    }
+
 }

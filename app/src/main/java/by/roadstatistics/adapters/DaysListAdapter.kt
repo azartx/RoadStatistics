@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import by.roadstatistics.databinding.ItemRecycleViewBinding
+import by.roadstatistics.ui.NavMainActivity
+import by.roadstatistics.utils.AdapterToFragmentListener
+import by.roadstatistics.utils.ChangeFragmentListener
 
-class DaysListAdapter : RecyclerView.Adapter<DaysListAdapter.DaysViewHolder>() {
+class DaysListAdapter(var adapterToFragmentListener: AdapterToFragmentListener) : RecyclerView.Adapter<DaysListAdapter.DaysViewHolder>() {
      var daysList: List<Int> = emptyList()
 
     fun updateList(list: List<Int>) {
@@ -17,16 +20,22 @@ class DaysListAdapter : RecyclerView.Adapter<DaysListAdapter.DaysViewHolder>() {
         ItemRecycleViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
-    override fun onBindViewHolder(holder: DaysViewHolder, position: Int) { holder.bind(daysList[position]) }
+    override fun onBindViewHolder(holder: DaysViewHolder, position: Int) { holder.bind(daysList[position], adapterToFragmentListener) }
 
     override fun getItemCount() = daysList.size
 
     class DaysViewHolder(private val binding: ItemRecycleViewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(day: Int) {
+        fun bind(day: Int, adapterToFragmentListener: AdapterToFragmentListener) {
             binding.recycleViewText.text = "Day $day"
+
+            binding.root.setOnClickListener {
+                adapterToFragmentListener.onDeyNumberSend(dayNumber = day)
+            }
 
         }
 
     }
+
+
 
 }

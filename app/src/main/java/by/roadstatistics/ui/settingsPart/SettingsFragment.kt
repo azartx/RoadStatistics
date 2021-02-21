@@ -1,6 +1,5 @@
 package by.roadstatistics.ui.settingsPart
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.view.View
 import android.widget.Spinner
@@ -8,10 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.adapters.SettingsSpinnerAdapter
-import by.roadstatistics.adapters.SpinnerAdapter
 import by.roadstatistics.database.DatabaseRepository
-import kotlinx.coroutines.*
-import kotlin.coroutines.coroutineContext
 
 // настрйоки
 
