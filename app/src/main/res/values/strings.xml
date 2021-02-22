@@ -2,7 +2,7 @@
     <string name="app_name">Road Statistics</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="loading">Loading...</string>
-    <string name="title_activity_bottom_nav">MainActivity</string>
+    <string name="title_activity_bottom_nav">Road Statistics</string>
     <string name="daysMenu">Days</string>
     <string name="mapMenu">Map</string>
     <string name="settingsMenu">Settings</string>

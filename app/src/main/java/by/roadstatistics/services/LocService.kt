@@ -6,14 +6,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_NONE
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color
 import android.icu.util.LocaleData
-import android.os.Binder
-import android.os.Build
-import android.os.IBinder
-import android.os.Looper
+import android.location.Location
+import android.location.LocationManager
+import android.os.*
 import android.provider.ContactsContract
 import android.util.Log
 import androidx.core.app.NotificationCompat.Builder
@@ -24,12 +24,7 @@ import androidx.core.content.ContextCompat
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.database.DatabaseRepository
 import by.roadstatistics.database.DaysDB
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationAvailability
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -130,7 +125,7 @@ class LocService : Service() {
             locationRequest, object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult?) {
                     super.onLocationResult(locationResult)
-                    Log.i("FFFF", locationResult?.lastLocation.toString())
+                    Log.i("FFFF", locationResult?.lastLocation.toString() + "LOCATION")
                 }
 
                 override fun onLocationAvailability(p0: LocationAvailability?) {

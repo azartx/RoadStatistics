@@ -1,6 +1,5 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +7,7 @@ import androidx.fragment.app.Fragment
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -33,21 +33,79 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        localMap = googleMap
+        googleMap.also { map ->
+            val cameraLocation = CameraUpdateFactory
+                .newLatLngZoom(
+                    LatLng(
+                        dayInfoList[0].latitude.toDouble(),
+                        dayInfoList[0].longitude.toDouble()
+                    ),
+                    9.0f
+                )
+            map.moveCamera(cameraLocation)
+            localMap = map
+        }
+
+        // в переменные записываются координаты, а в добавлении полилайна проверяется,
+        // не добавлялись ли такое координаты в прошлом ходе, что бы не было одинаковых корд в одной точке
+
+        makeStartMarker()
+        createPolyline()
+        makeEndMarker()
 
 
-        //localMap.addMarker(MarkerOptions().title("Hello world").snippet("Additional text").position(LatLng(dayInfoList[0].longitude.toDouble(), dayInfoList[0].longitude.toDouble())))
+    }
 
+    private fun makeEndMarker() {
+        MarkerOptions().apply {
+            title("End")
+            snippet("End cord is here")
+            position(
+                LatLng(
+                    dayInfoList[dayInfoList.size - 1].latitude.toDouble(),
+                    dayInfoList[dayInfoList.size - 1].longitude.toDouble()
+                )
+            )
 
+            localMap.addMarker(this)
+        }
+    }
+
+    private fun createPolyline() {
         PolylineOptions().also { polylineOptions ->
+            var lat = 0.0
+            var lng = 0.0
             for (marker in dayInfoList) {
-                polylineOptions.add(LatLng(marker.latitude.toDouble(), marker.longitude.toDouble()))
+                if (marker.latitude.toDouble() != lat && marker.longitude.toDouble() != lng) {
+                    polylineOptions.add(
+                        LatLng(
+                            marker.latitude.toDouble(),
+                            marker.longitude.toDouble()
+                        )
+                    )
+                    Log.i("FFFF", marker.latitude.toDouble().toString() + " lat")
+                    Log.i("FFFF", marker.longitude.toDouble().toString() + " lon")
+                    lat = marker.latitude.toDouble()
+                    lng = marker.longitude.toDouble()
+                }
             }
             localMap.addPolyline(polylineOptions)
         }
+    }
 
+    private fun makeStartMarker() {
+        MarkerOptions().apply {
+            title("Start")
+            snippet("Start cord is here")
+            position(
+                LatLng(
+                    dayInfoList[0].latitude.toDouble(),
+                    dayInfoList[0].longitude.toDouble()
+                )
+            )
 
-
+            localMap.addMarker(this)
+        }
     }
 
 }
