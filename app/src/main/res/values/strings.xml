@@ -20,4 +20,15 @@
     <string name="december">December</string>
     <string name="no_months">empty</string>
     <string name="no_stat_in_this_month">No stat in this month</string>
+    <string name="startWalk">Start</string>
+    <string name="endWalk">End</string>
+    <string name="unknown_addres">Unknown address</string>
+    <string name="plus_one">Plus one</string>
+    <string name="minus_one">Minus one</string>
+    <string name="settings_spinner_desc">You can select current year, if you using app during several years.</string>
+    <string name="settingsLoopDesc">You can change the standard value of the approximation when opening the map</string>
+    <string name="fr_one_days_list">Days list</string>
+    <string name="fr_map">Map</string>
+    <string name="fr_settings">Settings</string>
+    <string name="fr_picket_day">Day information on map</string>
 </resources>

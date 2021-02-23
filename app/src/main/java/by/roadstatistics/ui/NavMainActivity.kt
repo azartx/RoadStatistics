@@ -1,7 +1,11 @@
 package by.roadstatistics.ui
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -26,6 +30,8 @@ import by.roadstatistics.utils.Constants.FRAGMENT_DAYS_LIST
 import by.roadstatistics.utils.Constants.FRAGMENT_MAP_GENERAL
 import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
 import by.roadstatistics.utils.Constants.FRAGMENT_SETTINGS
+import by.roadstatistics.utils.Constants.MAP_LOOP
+import by.roadstatistics.utils.Constants.MAP_LOOP_KEY
 import by.roadstatistics.utils.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -38,9 +44,10 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_nav)
         setSupportActionBar(findViewById(R.id.toolbar_actionbar))
-        setToolbarTitle("Список дней")
+        setToolbarTitle(getString(R.string.fr_one_days_list))
         viewModelProvider = ViewModelProvider(this)
         spinner = findViewById(R.id.action_bar_spinner)
+        MAP_LOOP = getPreferences(MODE_PRIVATE).getFloat(MAP_LOOP_KEY, 11.0F)
 
         askLocationPermission()
 
@@ -61,7 +68,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     supportFragmentManager.beginTransaction()
                         .replace<DaysListFragment>(R.id.nav_host_fragment, "", null)
                         .commit()
-                    setToolbarTitle("Список дней")
+                    setToolbarTitle(getString(R.string.fr_one_days_list))
                     true
                 }
                 R.id.nav_map_global -> {
@@ -70,7 +77,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                         .replace<MapGeneralFragment>(R.id.nav_host_fragment, "", null)
                         .addToBackStack(null)
                         .commit()
-                    setToolbarTitle("Карта")
+                    setToolbarTitle(getString(R.string.fr_map))
                     true
                 }
                 R.id.nav_settings -> {
@@ -79,7 +86,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                         .replace<SettingsFragment>(R.id.nav_host_fragment, "", null)
                         .addToBackStack(null)
                         .commit()
-                    setToolbarTitle("Настройки")
+                    setToolbarTitle(getString(R.string.fr_settings))
                     true
                 }
                 else -> false
@@ -132,17 +139,18 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     override fun onFragmentChange(fragmentId: Int, bundle: Bundle?) {
         when (fragmentId) {
-            FRAGMENT_DAYS_LIST -> supportFragmentManager.beginTransaction()
+            /*FRAGMENT_DAYS_LIST -> supportFragmentManager.beginTransaction()
                 .replace<DaysListFragment>(R.id.nav_host_fragment, "", bundle).commit()
             FRAGMENT_MAP_GENERAL -> supportFragmentManager.beginTransaction()
                 .replace<GlobalMapFragment>(R.id.nav_host_fragment, "", bundle).commit()
             FRAGMENT_SETTINGS -> supportFragmentManager.beginTransaction()
-                .replace<SettingsFragment>(R.id.nav_host_fragment, "", bundle).commit()
+                .replace<SettingsFragment>(R.id.nav_host_fragment, "", bundle).commit()*/
             FRAGMENT_PICKET_DAY -> {
                 supportFragmentManager.beginTransaction()
                     .replace<PicketDayFragment>(R.id.nav_host_fragment, "", bundle)
                     .addToBackStack(null)
                     .commit()
+                setToolbarTitle(getString(R.string.fr_picket_day))
             }
 
         }
@@ -157,4 +165,10 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
     }
 
+    override fun onPause() {
+        super.onPause()
+        getPreferences(MODE_PRIVATE).edit().apply {
+            putFloat(MAP_LOOP_KEY, MAP_LOOP).apply()
+        }
+    }
 }

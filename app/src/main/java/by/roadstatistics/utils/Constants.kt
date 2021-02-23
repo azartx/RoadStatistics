@@ -17,4 +17,8 @@ object Constants {
     @JvmStatic
     var CURRENT_MONTH = 0
 
+    @JvmStatic
+    var MAP_LOOP = 11.0F
+    const val MAP_LOOP_KEY = "loop key"
+
 }

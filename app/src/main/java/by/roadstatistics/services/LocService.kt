@@ -9,6 +9,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.icu.util.LocaleData
 import android.location.Location
@@ -16,11 +17,13 @@ import android.location.LocationManager
 import android.os.*
 import android.provider.ContactsContract
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationCompat.CATEGORY_SERVICE
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
 import androidx.core.content.ContextCompat
+import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.database.DatabaseRepository
 import by.roadstatistics.database.DaysDB
@@ -33,14 +36,16 @@ import java.util.*
 class LocService : Service() {
 
     private val bindService: BindService = BindService()
-    private lateinit var locationProvider: FusedLocationProviderClient
+    //private lateinit var locationProvider: FusedLocationProviderClient
     private lateinit var databaseRepository: DatabaseRepository
+    private val cal = Calendar.getInstance()
 
     private fun showServiceNotification() {
         createNotificationChannel()
         Builder(baseContext, "myService")
             .setContentTitle("Location service is now run.")
             .setContentText("Running statistic read your location and confirming to you statistics.")
+            .setSmallIcon(R.mipmap.ic_map)
             .setCategory(CATEGORY_SERVICE)
             .setPriority(PRIORITY_MAX)
             .build().apply {
@@ -65,14 +70,32 @@ class LocService : Service() {
         Log.i("FFFF", "service is start")
     }
 
-    @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         showServiceNotification()
 
         CoroutineScope(Dispatchers.Main + Job()).launch {
             withContext(Dispatchers.Unconfined) {
 
-                while (true) {
+                if (checkLocationPermission()) {
+                    val los = getSystemService(LOCATION_SERVICE) as LocationManager
+                    los.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5F) { loc ->
+                        databaseRepository = DatabaseRepository(baseContext)
+                        databaseRepository.addCordsToDatabase(
+                            CordInfo(
+                                year = cal.get(Calendar.YEAR),
+                                month = cal.get(Calendar.MONTH) + 1,
+                                day = cal.get(Calendar.DAY_OF_MONTH),
+                                hours = cal.get(Calendar.HOUR_OF_DAY),
+                                minutes = cal.get(Calendar.MINUTE),
+                                latitude = loc.latitude.toFloat(),
+                                longitude = loc.longitude.toFloat()
+                            )
+                        )
+                    }
+                }
+
+
+                /*while (true) {
                     if (checkLocationPermission()) {
                         locationProvider =
                             LocationServices.getFusedLocationProviderClient(baseContext)
@@ -99,12 +122,10 @@ class LocService : Service() {
                         }
                     }
                     delay(5000)
-                }
+                }*/
+
             }
         }
-
-
-
         return START_STICKY
     }
 
@@ -116,24 +137,5 @@ class LocService : Service() {
     inner class BindService() : Binder() {
         // TODO Some code
     }
-
-    /*@SuppressLint("MissingPermission")
-    private fun requestUserLocation() {
-        val locationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        locationProvider.requestLocationUpdates(
-            locationRequest, object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult?) {
-                    super.onLocationResult(locationResult)
-                    Log.i("FFFF", locationResult?.lastLocation.toString() + "LOCATION")
-                }
-
-                override fun onLocationAvailability(p0: LocationAvailability?) {
-                    super.onLocationAvailability(p0)
-                }
-            },
-            Looper.getMainLooper()
-        )
-    }*/
 
 }
