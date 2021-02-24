@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".ui.settingsPart.SettingsFragment">
@@ -13,12 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="19sp"
         android:gravity="center"
+        android:text="@string/settings_spinner_desc"
+        android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/settings_spinner_desc" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/settingsYearSpinner"
@@ -29,17 +29,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinnerDescription" />
 
+    <ImageView
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="@string/line"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_line"
+        app:layout_constraintTop_toBottomOf="@id/settingsYearSpinner" />
+
     <TextView
         android:id="@+id/changeMapLoopDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:textSize="19sp"
         android:gravity="center"
         android:text="@string/settingsLoopDesc"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/settingsYearSpinner"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsYearSpinner" />
 
     <TextView
         android:id="@+id/loopState"
@@ -48,9 +59,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@id/plusLoopSize"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/changeMapLoopDescription"
-        app:layout_constraintEnd_toStartOf="@id/plusLoopSize"/>
+        app:layout_constraintTop_toBottomOf="@+id/changeMapLoopDescription" />
 
     <ImageButton
         android:id="@+id/plusLoopSize"
@@ -72,5 +83,83 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/loopState" />
 
+    <ImageView
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="@string/line"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_line"
+        app:layout_constraintTop_toBottomOf="@id/loopState" />
+
+    <TextView
+        android:id="@+id/settingsChangeColorDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:text="@string/you_can_change_color_of_route_lines_on_you_maps"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+    <LinearLayout
+        android:id="@+id/buttonsRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsChangeColorDesc">
+
+        <Button
+            android:id="@+id/settButtonBlack"
+            style="@style/RoundedCornerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/black" />
+
+        <Button
+            android:id="@+id/settButtonYellow"
+            style="@style/RoundedCornerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/button_yellow" />
+
+        <Button
+            android:id="@+id/settButtonGreen"
+            style="@style/RoundedCornerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/button_green" />
+
+        <Button
+            android:id="@+id/settButtonRed"
+            style="@style/RoundedCornerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/button_red" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="@string/line"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_line"
+        app:layout_constraintTop_toBottomOf="@id/buttonsRoot" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

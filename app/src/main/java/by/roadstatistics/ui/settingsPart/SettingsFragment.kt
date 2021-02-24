@@ -9,8 +9,9 @@ import by.roadstatistics.R
 import by.roadstatistics.adapters.SettingsSpinnerAdapter
 import by.roadstatistics.databinding.FragmentSettingsBinding
 import by.roadstatistics.utils.Constants.MAP_LOOP
+import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 
-// настрйоки
+// настройки
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -22,9 +23,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding = FragmentSettingsBinding.bind(view)
         viewModelProvider = ViewModelProvider(this)
         binding.loopState.text = MAP_LOOP.toString()
+        checkCurrentColor()
 
         binding.plusLoopSize.setOnClickListener {
-            if (MAP_LOOP <= 15) {
+            if (MAP_LOOP <= 19) {
                 MAP_LOOP += 1
                 binding.loopState.text = MAP_LOOP.toString()
             }
@@ -35,6 +37,38 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 MAP_LOOP -= 1
                 binding.loopState.text = MAP_LOOP.toString()
             }
+        }
+
+        binding.settButtonBlack.setOnClickListener {
+            binding.settButtonBlack.text = "ට"
+            binding.settButtonYellow.text = null
+            binding.settButtonGreen.text = null
+            binding.settButtonRed.text = null
+            CURRENT_POLYLINE_COLOR = R.color.black
+        }
+
+        binding.settButtonYellow.setOnClickListener {
+            binding.settButtonBlack.text = null
+            binding.settButtonYellow.text = "ට"
+            binding.settButtonGreen.text = null
+            binding.settButtonRed.text = null
+            CURRENT_POLYLINE_COLOR = R.color.button_yellow
+        }
+
+        binding.settButtonGreen.setOnClickListener {
+            binding.settButtonBlack.text = null
+            binding.settButtonYellow.text = null
+            binding.settButtonGreen.text = "ට"
+            binding.settButtonRed.text = null
+            CURRENT_POLYLINE_COLOR = R.color.button_green
+        }
+
+        binding.settButtonRed.setOnClickListener {
+            binding.settButtonBlack.text = null
+            binding.settButtonYellow.text = null
+            binding.settButtonGreen.text = null
+            binding.settButtonRed.text = "ට"
+            CURRENT_POLYLINE_COLOR = R.color.button_red
         }
 
         viewModelProvider.get(SettingsViewModel::class.java).also { viewModel ->
@@ -50,6 +84,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
 
 
+    }
+
+    private fun checkCurrentColor() {
+        when (CURRENT_POLYLINE_COLOR) {
+            R.color.black -> binding.settButtonBlack.text = "ට"
+            R.color.button_yellow -> binding.settButtonYellow.text = "ට"
+            R.color.button_green -> binding.settButtonGreen.text = "ට"
+            R.color.button_red -> binding.settButtonRed.text = "ට"
+        }
     }
 
 

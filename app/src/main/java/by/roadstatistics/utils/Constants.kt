@@ -1,5 +1,6 @@
 package by.roadstatistics.utils
 
+import by.roadstatistics.R
 import java.util.*
 
 object Constants {
@@ -20,5 +21,9 @@ object Constants {
     @JvmStatic
     var MAP_LOOP = 11.0F
     const val MAP_LOOP_KEY = "loop key"
+
+    @JvmStatic
+    var CURRENT_POLYLINE_COLOR = R.color.black
+    const val COLOR_KEY = "color key"
 
 }

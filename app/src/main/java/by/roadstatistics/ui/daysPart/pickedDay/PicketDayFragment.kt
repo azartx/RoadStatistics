@@ -1,5 +1,6 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
+import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 import by.roadstatistics.utils.Constants.MAP_LOOP
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,6 +17,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCallback {
 
@@ -62,24 +68,27 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
     }
 
     private fun createStartEndMarkers() {
-        picketDayViewModelProvider.get(PicketDayViewModel::class.java).also {
-            it.startCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
-                makeStartMarker(address)
-            })
-            it.endCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
-                makeEndMarker(address)
-            })
-            it.getStartCordAddress(
-                requireContext(),
-                dayInfoList[0].latitude.toDouble(),
-                dayInfoList[0].longitude.toDouble()
-            )
-            it.getEndCordAddress(
-                requireContext(),
-                dayInfoList[dayInfoList.size - 1].latitude.toDouble(),
-                dayInfoList[dayInfoList.size - 1].longitude.toDouble()
-            )
+
+            picketDayViewModelProvider.get(PicketDayViewModel::class.java).also {
+                it.startCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
+                    makeStartMarker(address)
+                })
+                it.endCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
+                    makeEndMarker(address)
+                })
+                it.getStartCordAddress(
+                    requireContext(),
+                    dayInfoList[0].latitude.toDouble(),
+                    dayInfoList[0].longitude.toDouble()
+                )
+                it.getEndCordAddress(
+                    requireContext(),
+                    dayInfoList[dayInfoList.size - 1].latitude.toDouble(),
+                    dayInfoList[dayInfoList.size - 1].longitude.toDouble()
+                )
+
         }
+
     }
 
     private fun makeStartMarker(address: String) {
@@ -126,6 +135,7 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
                     lng = marker.longitude.toDouble()
                 }
             }
+            polylineOptions.color(resources.getColor(CURRENT_POLYLINE_COLOR, null ))
             localMap.addPolyline(polylineOptions)
         }
     }

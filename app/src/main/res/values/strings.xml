@@ -31,4 +31,11 @@
     <string name="fr_map">Map</string>
     <string name="fr_settings">Settings</string>
     <string name="fr_picket_day">Day information on map</string>
+    <string name="you_can_change_color_of_route_lines_on_you_maps">You can change color of route lines on you maps.</string>
+    <string name="line">Line</string>
+    <string name="notification_location_description">Running statistic read your location and confirming to you statistics.</string>
+    <string name="notificationLocationTitle">Location service is now run.</string>
+    <string name="notification_location_name">Road Statistics Location service</string>
+    <string name="notificationLostInternetConnection">Road Statistic application need internet connection to work correct. Please, turn ON you internet and click on app icon or ignore this notification. Have a good day :)</string>
+    <string name="notificationLostInternetConnectionTitle">Internet Connection is lost :(</string>
 </resources>

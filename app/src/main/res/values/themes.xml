@@ -21,4 +21,10 @@
         <item name="android:background">@color/toolbar_orange</item>
     </style>
 
+    <style name="RoundedCornerButton" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="background">@drawable/ic_button_settings</item>
+        <item name="colorButtonNormal">#1a237e</item>
+        <item name="colorControlHighlight">#673ab7</item>
+    </style>
+
 </resources>
