@@ -13,6 +13,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Binder
+import android.util.Log
 import androidx.core.app.NotificationCompat.*
 import androidx.core.content.ContextCompat
 import by.roadstatistics.R
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.lang.NullPointerException
 import java.net.InetAddress
 import java.util.Calendar
 
@@ -50,20 +52,26 @@ class LocService : Service() {
 
                 if (checkLocationPermission()) {
                     // этот вызов отработает раз, добавит координат сразу
-                    locationProvider = LocationServices.getFusedLocationProviderClient(baseContext)
-                    locationProvider.lastLocation.addOnCompleteListener { loc ->
-                        databaseRepository.addCordsToDatabase(
-                            CordInfo(
-                                year = cal.get(Calendar.YEAR),
-                                month = cal.get(Calendar.MONTH) + 1,
-                                day = cal.get(Calendar.DAY_OF_MONTH),
-                                hours = cal.get(Calendar.HOUR_OF_DAY),
-                                minutes = cal.get(Calendar.MINUTE),
-                                latitude = loc.result.latitude.toFloat(),
-                                longitude = loc.result.longitude.toFloat()
+                    try {
+                        locationProvider =
+                            LocationServices.getFusedLocationProviderClient(baseContext)
+                        locationProvider.lastLocation.addOnCompleteListener { loc ->
+                            databaseRepository.addCordsToDatabase(
+                                CordInfo(
+                                    year = cal.get(Calendar.YEAR),
+                                    month = cal.get(Calendar.MONTH) + 1,
+                                    day = cal.get(Calendar.DAY_OF_MONTH),
+                                    hours = cal.get(Calendar.HOUR_OF_DAY),
+                                    minutes = cal.get(Calendar.MINUTE),
+                                    latitude = loc.result.latitude.toFloat(),
+                                    longitude = loc.result.longitude.toFloat()
+                                )
                             )
-                        )
+                        }
+                    } catch (e: NullPointerException) {
+                        Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
                     }
+
 
                     // этот вызов будет писать в базу по изменению локации
                     val los = getSystemService(LOCATION_SERVICE) as LocationManager
