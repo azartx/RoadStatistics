@@ -1,12 +1,15 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
 import android.content.res.Resources
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
+import by.roadstatistics.databinding.FragmentPicketDayBinding
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
 import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 import by.roadstatistics.utils.Constants.MAP_LOOP
@@ -27,9 +30,11 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
     private lateinit var localMap: GoogleMap
     private lateinit var dayInfoList: ArrayList<CordInfo>
     private lateinit var picketDayViewModelProvider: ViewModelProvider
+    private lateinit var binding: FragmentPicketDayBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentPicketDayBinding.bind(view)
         picketDayViewModelProvider = ViewModelProvider(this)
 
         dayInfoList = arguments?.getParcelableArrayList(BUNDLE_KEY_PICKET_DAY_FRAGMENT)
@@ -48,6 +53,9 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
 
         createStartEndMarkers()
         createPolyline()
+
+
+
 
 
     }
@@ -69,23 +77,27 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
 
     private fun createStartEndMarkers() {
 
-            picketDayViewModelProvider.get(PicketDayViewModel::class.java).also {
-                it.startCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
+            picketDayViewModelProvider.get(PicketDayViewModel::class.java).also { vm ->
+                vm.startCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
                     makeStartMarker(address)
                 })
-                it.endCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
+                vm.endCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
                     makeEndMarker(address)
                 })
-                it.getStartCordAddress(
+                vm.distanceLiveData.observe(viewLifecycleOwner, { distance ->
+                    binding.text1.text = "${distance / 1000} Km"
+                })
+                vm.getStartCordAddress(
                     requireContext(),
                     dayInfoList[0].latitude.toDouble(),
                     dayInfoList[0].longitude.toDouble()
                 )
-                it.getEndCordAddress(
+                vm.getEndCordAddress(
                     requireContext(),
                     dayInfoList[dayInfoList.size - 1].latitude.toDouble(),
                     dayInfoList[dayInfoList.size - 1].longitude.toDouble()
                 )
+                vm.getDistance(dayInfoList)
 
         }
 

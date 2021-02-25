@@ -10,6 +10,10 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Color
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkInfo
+import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Binder
@@ -29,6 +33,7 @@ import java.lang.Exception
 import java.lang.NullPointerException
 import java.net.InetAddress
 import java.util.Calendar
+import java.util.concurrent.Executors
 
 class LocService : Service() {
 
@@ -37,6 +42,7 @@ class LocService : Service() {
     private lateinit var databaseRepository: DatabaseRepository
     private val cal = Calendar.getInstance()
     private val CHANNEL_ID = "myChannel"
+    private val executorService = Executors.newSingleThreadExecutor()
 
     override fun onCreate() {
         super.onCreate()
@@ -49,68 +55,7 @@ class LocService : Service() {
 
         CoroutineScope(Dispatchers.Main + Job()).launch {
             withContext(Dispatchers.Unconfined) {
-
-                if (checkLocationPermission()) {
-                    // этот вызов отработает раз, добавит координат сразу
-                    try {
-                        locationProvider =
-                            LocationServices.getFusedLocationProviderClient(baseContext)
-                        locationProvider.lastLocation.addOnCompleteListener { loc ->
-                            databaseRepository.addCordsToDatabase(
-                                CordInfo(
-                                    year = cal.get(Calendar.YEAR),
-                                    month = cal.get(Calendar.MONTH) + 1,
-                                    day = cal.get(Calendar.DAY_OF_MONTH),
-                                    hours = cal.get(Calendar.HOUR_OF_DAY),
-                                    minutes = cal.get(Calendar.MINUTE),
-                                    latitude = loc.result.latitude.toFloat(),
-                                    longitude = loc.result.longitude.toFloat()
-                                )
-                            )
-                        }
-                    } catch (e: NullPointerException) {
-                        Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
-                    }
-
-
-                    // этот вызов будет писать в базу по изменению локации
-                    val los = getSystemService(LOCATION_SERVICE) as LocationManager
-                    if (checkInternetConnection() && checkGpsIsOn()) {
-                        los.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5F) { loc ->
-                            databaseRepository.addCordsToDatabase(
-                                CordInfo(
-                                    year = cal.get(Calendar.YEAR),
-                                    month = cal.get(Calendar.MONTH) + 1,
-                                    day = cal.get(Calendar.DAY_OF_MONTH),
-                                    hours = cal.get(Calendar.HOUR_OF_DAY),
-                                    minutes = cal.get(Calendar.MINUTE),
-                                    latitude = loc.latitude.toFloat(),
-                                    longitude = loc.longitude.toFloat()
-                                )
-                            )
-                        }
-                    } else if (checkInternetConnection() && !checkGpsIsOn()) {
-                        los.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            5000,
-                            5F
-                        ) { loc ->
-                            databaseRepository.addCordsToDatabase(
-                                CordInfo(
-                                    year = cal.get(Calendar.YEAR),
-                                    month = cal.get(Calendar.MONTH) + 1,
-                                    day = cal.get(Calendar.DAY_OF_MONTH),
-                                    hours = cal.get(Calendar.HOUR_OF_DAY),
-                                    minutes = cal.get(Calendar.MINUTE),
-                                    latitude = loc.latitude.toFloat(),
-                                    longitude = loc.longitude.toFloat()
-                                )
-                            )
-                        }
-                    } else if (!checkInternetConnection()) {
-                        showLostInternetNotification()
-                    }
-                }
+                getCordsLogic()
 
 
                 /*while (true) {
@@ -147,6 +92,70 @@ class LocService : Service() {
         return START_STICKY
     }
 
+    private fun getCordsLogic() {
+        if (checkLocationPermission()) {
+            // этот вызов отработает раз, добавит координат сразу
+            try {
+                locationProvider =
+                    LocationServices.getFusedLocationProviderClient(baseContext)
+                locationProvider.lastLocation.addOnCompleteListener { loc ->
+                    databaseRepository.addCordsToDatabase(
+                        CordInfo(
+                            year = cal.get(Calendar.YEAR),
+                            month = cal.get(Calendar.MONTH) + 1,
+                            day = cal.get(Calendar.DAY_OF_MONTH),
+                            hours = cal.get(Calendar.HOUR_OF_DAY),
+                            minutes = cal.get(Calendar.MINUTE),
+                            latitude = loc.result.latitude.toFloat(),
+                            longitude = loc.result.longitude.toFloat()
+                        )
+                    )
+                }
+            } catch (e: NullPointerException) {
+                Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
+            }
+
+
+            // этот вызов будет писать в базу по изменению локации
+            val los = getSystemService(LOCATION_SERVICE) as LocationManager
+            if (checkInternetConnection() && checkGpsIsOn()) {
+                los.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5F) { loc ->
+                    databaseRepository.addCordsToDatabase(
+                        CordInfo(
+                            year = cal.get(Calendar.YEAR),
+                            month = cal.get(Calendar.MONTH) + 1,
+                            day = cal.get(Calendar.DAY_OF_MONTH),
+                            hours = cal.get(Calendar.HOUR_OF_DAY),
+                            minutes = cal.get(Calendar.MINUTE),
+                            latitude = loc.latitude.toFloat(),
+                            longitude = loc.longitude.toFloat()
+                        )
+                    )
+                }
+            } else if (checkInternetConnection() && !checkGpsIsOn()) {
+                los.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    5000,
+                    5F
+                ) { loc ->
+                    databaseRepository.addCordsToDatabase(
+                        CordInfo(
+                            year = cal.get(Calendar.YEAR),
+                            month = cal.get(Calendar.MONTH) + 1,
+                            day = cal.get(Calendar.DAY_OF_MONTH),
+                            hours = cal.get(Calendar.HOUR_OF_DAY),
+                            minutes = cal.get(Calendar.MINUTE),
+                            latitude = loc.latitude.toFloat(),
+                            longitude = loc.longitude.toFloat()
+                        )
+                    )
+                }
+            } else if (!checkInternetConnection()) {
+                //showLostInternetNotification()
+            }
+        }
+    }
+
     // if sdk.level >= api26 then create notification channel
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -167,7 +176,7 @@ class LocService : Service() {
         Builder(baseContext, CHANNEL_ID)
             .setContentTitle(getString(R.string.notificationLocationTitle))
             .setContentText(getString(R.string.notification_location_description))
-            .setSmallIcon(R.mipmap.ic_map)
+            .setSmallIcon(R.mipmap.icon)
             .setCategory(CATEGORY_SERVICE)
             .setPriority(PRIORITY_MAX)
             .build().apply {
@@ -180,19 +189,36 @@ class LocService : Service() {
             .setContentTitle(getString(R.string.notificationLostInternetConnectionTitle))
             .setContentText(getString(R.string.notificationLostInternetConnection))
             .setCategory(CATEGORY_MESSAGE)
+            .setSmallIcon(R.mipmap.icon)
             .setPriority(PRIORITY_MIN)
             .build().apply {
                 startForeground(102, this)
             }
+
+        do {
+            if (checkInternetConnection()) {
+                getSystemService(NOTIFICATION_SERVICE).apply {
+                    this as NotificationManager
+                    this.cancel(101)
+                }
+                getCordsLogic()
+                break
+            }
+        } while (!checkInternetConnection())
+
+
     }
 
     private fun checkInternetConnection(): Boolean {
-        return try {
+        /*return try {
             val checkConnection = InetAddress.getByName("https://google.com/")
             checkConnection.equals("")
         } catch (e: Exception) {
+            Log.i("FFFF", e.toString())
             false
-        }
+        }*/
+        return true
+
     }
 
     private fun checkGpsIsOn(): Boolean {

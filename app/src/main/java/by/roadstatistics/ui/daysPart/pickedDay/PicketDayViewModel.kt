@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import by.roadstatistics.R
+import by.roadstatistics.database.CordInfo
+import by.roadstatistics.utils.CordsToKmMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,6 +26,9 @@ class PicketDayViewModel : ViewModel() {
 
     private val endCordsAddressMutablyLiveData = MutableLiveData<String>()
     val endCordsAddressLiveData: LiveData<String> = endCordsAddressMutablyLiveData
+
+    private val distanceMutablyLiveData = MutableLiveData<Int>()
+    val distanceLiveData: LiveData<Int> = distanceMutablyLiveData
 
     fun getStartCordAddress(context: Context, lat: Double, lng: Double) {
         coroutineScope.launch {
@@ -60,4 +65,9 @@ class PicketDayViewModel : ViewModel() {
             } ?: context.getString(R.string.unknown_addres)
         }
     }
+
+    fun getDistance(list: ArrayList<CordInfo>) {
+        distanceMutablyLiveData.value = CordsToKmMapper().latLonToDistance(list)
+    }
+
 }
