@@ -47,4 +47,9 @@ class DatabaseRepository(context: Context) {
         }
     }
 
+    fun closeDatabase() {
+        database.close()
+    }
+
+
 }

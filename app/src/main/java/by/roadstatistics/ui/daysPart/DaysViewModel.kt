@@ -29,6 +29,7 @@ class DaysViewModel : ViewModel() {
         databaseRepository = DatabaseRepository(context)
         coroutineScope.launch {
             dayMutablyLiveData.value = databaseRepository.getDaysInMonth(month, year)
+            databaseRepository.closeDatabase()
         }
     }
 
@@ -36,6 +37,7 @@ class DaysViewModel : ViewModel() {
         databaseRepository = DatabaseRepository(context)
         coroutineScope.launch {
             daysInfoMutablyLiveData.value = databaseRepository.getMonthDaysInfo(month, year)
+            databaseRepository.closeDatabase()
         }
     }
 
@@ -43,6 +45,7 @@ class DaysViewModel : ViewModel() {
         databaseRepository = DatabaseRepository(context)
         coroutineScope.launch {
             dayInfoMutablyLiveData.value = databaseRepository.getDay(year, month, day)
+            databaseRepository.closeDatabase()
         }
     }
 

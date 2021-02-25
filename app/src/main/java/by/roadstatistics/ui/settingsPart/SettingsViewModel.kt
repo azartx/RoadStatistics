@@ -21,6 +21,7 @@ class SettingsViewModel : ViewModel() {
         databaseRepository = DatabaseRepository(context)
         CoroutineScope(Dispatchers.Main + Job()).launch {
             yearListMutable.value = databaseRepository.getYearList()
+            databaseRepository.closeDatabase()
         }
     }
 

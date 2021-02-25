@@ -2,11 +2,13 @@ package by.roadstatistics.utils
 
 import android.location.Location
 import by.roadstatistics.database.CordInfo
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class CordsToKmMapper {
-    fun latLonToDistance(list: ArrayList<CordInfo>): Int {
+    fun latLonToDistance(list: ArrayList<CordInfo>): Double {
         val f: FloatArray = floatArrayOf(1F)
-        var distance = 0
+        var distance = 0.000
         for ((index, value) in list.withIndex()) {
             if (index != list.size - 1) {
                 Location.distanceBetween(
@@ -16,7 +18,7 @@ class CordsToKmMapper {
                     list[index + 1].longitude.toDouble(),
                     f
                 )
-                distance += f[0].toInt()
+                distance += f[0].toDouble()
             }
         }
         return distance

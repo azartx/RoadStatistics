@@ -38,4 +38,5 @@
     <string name="notification_location_name">Road Statistics Location service</string>
     <string name="notificationLostInternetConnection">Road Statistic application need internet connection to work correct. Please, turn ON you internet and click on app icon or ignore this notification. Have a good day :)</string>
     <string name="notificationLostInternetConnectionTitle">Internet Connection is lost :(</string>
+    <string name="notification_large_description">If you turn off this notification, app can\'t work correct.</string>
 </resources>

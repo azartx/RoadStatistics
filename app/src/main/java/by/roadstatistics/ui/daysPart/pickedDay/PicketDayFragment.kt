@@ -85,7 +85,7 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
                     makeEndMarker(address)
                 })
                 vm.distanceLiveData.observe(viewLifecycleOwner, { distance ->
-                    binding.text1.text = "${distance / 1000} Km"
+                    binding.text1.text = "$distance Km"
                 })
                 vm.getStartCordAddress(
                     requireContext(),

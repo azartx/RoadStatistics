@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -18,6 +19,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.Binder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.*
 import androidx.core.content.ContextCompat
 import by.roadstatistics.R
@@ -176,8 +178,11 @@ class LocService : Service() {
         Builder(baseContext, CHANNEL_ID)
             .setContentTitle(getString(R.string.notificationLocationTitle))
             .setContentText(getString(R.string.notification_location_description))
-            .setSmallIcon(R.mipmap.icon)
+            .setSmallIcon(R.drawable.ic_notif_small)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_notif_large))
             .setCategory(CATEGORY_SERVICE)
+            .setStyle(BigTextStyle().bigText(getString(R.string.notification_location_description) + getString(
+                            R.string.notification_large_description)))
             .setPriority(PRIORITY_MAX)
             .build().apply {
                 startForeground(101, this)
@@ -189,7 +194,8 @@ class LocService : Service() {
             .setContentTitle(getString(R.string.notificationLostInternetConnectionTitle))
             .setContentText(getString(R.string.notificationLostInternetConnection))
             .setCategory(CATEGORY_MESSAGE)
-            .setSmallIcon(R.mipmap.icon)
+            .setSmallIcon(R.drawable.ic_notif_small)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_notif_large))
             .setPriority(PRIORITY_MIN)
             .build().apply {
                 startForeground(102, this)

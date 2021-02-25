@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.text.DecimalFormat
 import java.util.Locale
 
 class PicketDayViewModel : ViewModel() {
@@ -27,8 +28,8 @@ class PicketDayViewModel : ViewModel() {
     private val endCordsAddressMutablyLiveData = MutableLiveData<String>()
     val endCordsAddressLiveData: LiveData<String> = endCordsAddressMutablyLiveData
 
-    private val distanceMutablyLiveData = MutableLiveData<Int>()
-    val distanceLiveData: LiveData<Int> = distanceMutablyLiveData
+    private val distanceMutablyLiveData = MutableLiveData<String>()
+    val distanceLiveData: LiveData<String> = distanceMutablyLiveData
 
     fun getStartCordAddress(context: Context, lat: Double, lng: Double) {
         coroutineScope.launch {
@@ -67,7 +68,8 @@ class PicketDayViewModel : ViewModel() {
     }
 
     fun getDistance(list: ArrayList<CordInfo>) {
-        distanceMutablyLiveData.value = CordsToKmMapper().latLonToDistance(list)
+        distanceMutablyLiveData.value =
+            DecimalFormat("#.###").format(CordsToKmMapper().latLonToDistance(list) / 1000)
     }
 
 }

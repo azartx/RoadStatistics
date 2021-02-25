@@ -26,10 +26,12 @@ class ActivityViewModel : ViewModel() {
         mainScope.launch {
             monthMutableLiveData.value = databaseRepository.getMonthList(CURRENT_YEAR)
         }
+        databaseRepository.closeDatabase()
     }
 
     fun actualMonth(month: String, context: Context) {
         getMonthIntMutableLiveData.value = SelectedMonthMapper(context).getMonthNumber(month)
+        databaseRepository.closeDatabase()
     }
 
 }
