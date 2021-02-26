@@ -34,6 +34,7 @@ object Constants {
 
     @JvmStatic
     var USER_ID = "0"
+    const val USER_ID_KEY = "user id key"
 
 
 }

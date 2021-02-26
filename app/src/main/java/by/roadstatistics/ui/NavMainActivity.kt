@@ -32,6 +32,7 @@ import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
 import by.roadstatistics.utils.Constants.MAP_LOOP
 import by.roadstatistics.utils.Constants.MAP_LOOP_KEY
 import by.roadstatistics.utils.Constants.USER_ID
+import by.roadstatistics.utils.Constants.USER_ID_KEY
 import by.roadstatistics.utils.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.*
@@ -52,10 +53,13 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         getPreferences(MODE_PRIVATE).apply {
             MAP_LOOP = this.getFloat(MAP_LOOP_KEY, 11.0F)
             CURRENT_POLYLINE_COLOR = this.getInt(COLOR_KEY, R.color.black)
-            APP_START_COUNT = this.getInt(APP_START_COUNT_KEY, 0)
+            APP_START_COUNT = this.getInt(APP_START_COUNT_KEY, 0) + 1
+            USER_ID = this.getString(USER_ID_KEY, "0")!!
         }
 
-        Log.i("FFFF", "preference check $USER_ID")
+        Log.i("FFFF", "USER_ID = $USER_ID")
+        Log.i("FFFF", "APP_START_COUNT = $APP_START_COUNT")
+
         askLocationPermission()
 
         initSpinner(spinner)
@@ -64,7 +68,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
         beginFirstFragment()
 
-        if (APP_START_COUNT == 0) {
+        if (APP_START_COUNT == 1) {
             login()
         }
 
@@ -198,11 +202,12 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     }
 
     override fun onPause() {
-        super.onPause()
         getPreferences(MODE_PRIVATE).edit().apply {
             putFloat(MAP_LOOP_KEY, MAP_LOOP)
-            putInt(COLOR_KEY, CURRENT_POLYLINE_COLOR).apply()
-            putInt(APP_START_COUNT_KEY, ++APP_START_COUNT)
-        }
+            putInt(COLOR_KEY, CURRENT_POLYLINE_COLOR)
+            putInt(APP_START_COUNT_KEY, APP_START_COUNT)
+            putString(USER_ID_KEY, USER_ID)
+        }.apply()
+        super.onPause()
     }
 }

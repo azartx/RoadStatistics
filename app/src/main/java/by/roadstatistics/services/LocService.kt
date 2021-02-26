@@ -26,6 +26,7 @@ import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.database.DatabaseRepository
 import by.roadstatistics.database.firebase.FirebaseRepository
+import by.roadstatistics.utils.Constants.USER_ID
 import com.google.android.gms.location.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -114,7 +115,9 @@ class LocService : Service() {
                             longitude = loc.result.longitude.toFloat()
                         )
                     )
-                    firebaseRepository.updateChildren(loc.result.latitude, loc.result.longitude)
+                    if (USER_ID != "0") {
+                        firebaseRepository.updateChildren(loc.result.latitude, loc.result.longitude)
+                    }
                 }
             } catch (e: NullPointerException) {
                 Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
@@ -136,7 +139,6 @@ class LocService : Service() {
                             longitude = loc.longitude.toFloat()
                         )
                     )
-
 
 
                 }
@@ -187,8 +189,13 @@ class LocService : Service() {
             .setSmallIcon(R.drawable.ic_notif_small)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_notif_large))
             .setCategory(CATEGORY_SERVICE)
-            .setStyle(BigTextStyle().bigText(getString(R.string.notification_location_description) + getString(
-                            R.string.notification_large_description)))
+            .setStyle(
+                BigTextStyle().bigText(
+                    getString(R.string.notification_location_description) + getString(
+                        R.string.notification_large_description
+                    )
+                )
+            )
             .setPriority(PRIORITY_MAX)
             .build().apply {
                 startForeground(101, this)

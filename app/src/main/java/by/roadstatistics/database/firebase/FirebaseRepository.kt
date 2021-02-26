@@ -20,7 +20,8 @@ class FirebaseRepository {
     }
 
     private fun toInt(id: String): String {
-        return (id.toInt() + 1).toString()
+        USER_ID = (id.toInt() + 1).toString()
+        return USER_ID
     }
 
     fun updateChildren(lat: Double, lon: Double) {
