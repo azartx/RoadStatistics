@@ -1,9 +1,11 @@
 package by.roadstatistics.ui
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -14,24 +16,31 @@ import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.adapters.SpinnerAdapter
+import by.roadstatistics.database.firebase.FirebaseRepository
+import by.roadstatistics.databinding.ItemLoginDialogBinding
 import by.roadstatistics.services.LocService
 import by.roadstatistics.ui.daysPart.DaysListFragment
 import by.roadstatistics.ui.daysPart.pickedDay.PicketDayFragment
 import by.roadstatistics.ui.mapPart.MapGeneralFragment
 import by.roadstatistics.ui.settingsPart.SettingsFragment
 import by.roadstatistics.utils.ChangeFragmentListener
+import by.roadstatistics.utils.Constants.APP_START_COUNT
+import by.roadstatistics.utils.Constants.APP_START_COUNT_KEY
 import by.roadstatistics.utils.Constants.COLOR_KEY
 import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
 import by.roadstatistics.utils.Constants.MAP_LOOP
 import by.roadstatistics.utils.Constants.MAP_LOOP_KEY
+import by.roadstatistics.utils.Constants.USER_ID
 import by.roadstatistics.utils.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.*
 
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var spinner: Spinner
+    private val fireDatabase = FirebaseDatabase.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +52,10 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         getPreferences(MODE_PRIVATE).apply {
             MAP_LOOP = this.getFloat(MAP_LOOP_KEY, 11.0F)
             CURRENT_POLYLINE_COLOR = this.getInt(COLOR_KEY, R.color.black)
+            APP_START_COUNT = this.getInt(APP_START_COUNT_KEY, 0)
         }
 
+        Log.i("FFFF", "preference check $USER_ID")
         askLocationPermission()
 
         initSpinner(spinner)
@@ -52,6 +63,10 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         startService(Intent(this, LocService::class.java))
 
         beginFirstFragment()
+
+        if (APP_START_COUNT == 0) {
+            login()
+        }
 
         val bn = findViewById<BottomNavigationView>(R.id.nav_view)
 
@@ -88,6 +103,38 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
             }
         }
 
+    }
+
+    private fun login() {
+        val itemDialogBinding: ItemLoginDialogBinding = ItemLoginDialogBinding.inflate(
+            LayoutInflater.from(this))
+        AlertDialog.Builder(this).apply {
+            setView(itemDialogBinding.root)
+            setTitle("First run")
+            setPositiveButton("Okay") { _, _ ->
+                if (itemDialogBinding.namePoolEditText.text.toString().isNotEmpty()) {
+
+                    val lastQuery: Query = fireDatabase.child("Users").orderByKey().limitToLast(1)
+                    lastQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            for (ds in dataSnapshot.children) {
+                                USER_ID = ds.child("id").value.toString()
+                                Log.i("FFFF1", ds.child("id").value.toString())
+                                Log.i("FFFF1", "Error, reboot app plz $USER_ID")
+                                FirebaseRepository().putUserDoDatabase(ds.child("id").value.toString(), itemDialogBinding.namePoolEditText.text.toString())
+                                ++APP_START_COUNT
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.i("FFFF", "Error, reboot app plz")
+                        }
+                    })
+                }
+            }
+            setCancelable(false)
+            create()
+            show()
+        }
     }
 
     private fun spinnerItemSelectedListener(spinner: Spinner, viewModel: ActivityViewModel) {
@@ -155,6 +202,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         getPreferences(MODE_PRIVATE).edit().apply {
             putFloat(MAP_LOOP_KEY, MAP_LOOP)
             putInt(COLOR_KEY, CURRENT_POLYLINE_COLOR).apply()
+            putInt(APP_START_COUNT_KEY, ++APP_START_COUNT)
         }
     }
 }

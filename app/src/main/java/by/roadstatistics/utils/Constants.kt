@@ -26,4 +26,14 @@ object Constants {
     var CURRENT_POLYLINE_COLOR = R.color.black
     const val COLOR_KEY = "color key"
 
+    @JvmStatic
+    var APP_START_COUNT = 0
+    var APP_START_COUNT_KEY = "app start count key"
+
+    const val FIREBASE_DATABASE_USER_KEY = "fdb user key"
+
+    @JvmStatic
+    var USER_ID = "0"
+
+
 }

@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.database.DatabaseRepository
+import by.roadstatistics.database.firebase.FirebaseRepository
 import com.google.android.gms.location.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +45,7 @@ class LocService : Service() {
     private lateinit var databaseRepository: DatabaseRepository
     private val cal = Calendar.getInstance()
     private val CHANNEL_ID = "myChannel"
-    private val executorService = Executors.newSingleThreadExecutor()
+    private val firebaseRepository = FirebaseRepository()
 
     override fun onCreate() {
         super.onCreate()
@@ -97,6 +98,7 @@ class LocService : Service() {
     private fun getCordsLogic() {
         if (checkLocationPermission()) {
             // этот вызов отработает раз, добавит координат сразу
+
             try {
                 locationProvider =
                     LocationServices.getFusedLocationProviderClient(baseContext)
@@ -112,6 +114,7 @@ class LocService : Service() {
                             longitude = loc.result.longitude.toFloat()
                         )
                     )
+                    firebaseRepository.updateChildren(loc.result.latitude, loc.result.longitude)
                 }
             } catch (e: NullPointerException) {
                 Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
@@ -133,6 +136,9 @@ class LocService : Service() {
                             longitude = loc.longitude.toFloat()
                         )
                     )
+
+
+
                 }
             } else if (checkInternetConnection() && !checkGpsIsOn()) {
                 los.requestLocationUpdates(
