@@ -75,19 +75,25 @@ class LocService : Service() {
                 locationProvider =
                     LocationServices.getFusedLocationProviderClient(baseContext)
                 locationProvider.lastLocation.addOnCompleteListener { loc ->
-                    databaseRepository.addCordsToDatabase(
-                        CordInfo(
-                            year = cal.get(Calendar.YEAR),
-                            month = cal.get(Calendar.MONTH) + 1,
-                            day = cal.get(Calendar.DAY_OF_MONTH),
-                            hours = cal.get(Calendar.HOUR_OF_DAY),
-                            minutes = cal.get(Calendar.MINUTE),
-                            latitude = loc.result.latitude.toFloat(),
-                            longitude = loc.result.longitude.toFloat()
+                    if (loc.result != null) {
+                        databaseRepository.addCordsToDatabase(
+                            CordInfo(
+                                year = cal.get(Calendar.YEAR),
+                                month = cal.get(Calendar.MONTH) + 1,
+                                day = cal.get(Calendar.DAY_OF_MONTH),
+                                hours = cal.get(Calendar.HOUR_OF_DAY),
+                                minutes = cal.get(Calendar.MINUTE),
+                                latitude = loc.result.latitude.toFloat(),
+                                longitude = loc.result.longitude.toFloat()
+                            )
                         )
-                    )
-                    if (USER_ID != "0") {
-                        firebaseRepository.updateChildren(loc.result.latitude, loc.result.longitude)
+
+                        if (USER_ID != "0") {
+                            firebaseRepository.updateChildren(
+                                loc.result.latitude,
+                                loc.result.longitude
+                            )
+                        }
                     }
                 }
             } catch (e: NullPointerException) {

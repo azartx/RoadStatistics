@@ -43,5 +43,6 @@
     <string name="okay">Okay</string>
     <string name="title">First run</string>
     <string name="day_day_list">Day </string>
-    <string name="km_distance">\" Km\"</string>
+    <string name="km_distance">KM</string>
+    <string name="total_passed">Total passed -\u0020</string>
 </resources>

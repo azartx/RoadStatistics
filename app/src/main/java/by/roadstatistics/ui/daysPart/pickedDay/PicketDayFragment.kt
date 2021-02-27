@@ -1,7 +1,9 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
+import android.graphics.drawable.Animatable2
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
@@ -75,7 +77,10 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
                     makeEndMarker(address)
                 })
                 vm.distanceLiveData.observe(viewLifecycleOwner, { distance ->
-                    binding.text1.text = distance.plus(getString(R.string.km_distance))
+                    binding.text1.text = getString(R.string.total_passed).plus(distance).plus(getString(R.string.km_distance))
+                    AnimationUtils.loadAnimation(this.context, R.anim.custom_anim).apply {
+                        binding.text1.startAnimation(this)
+                    }
                 })
                 vm.getStartCordAddress(
                     requireContext(),

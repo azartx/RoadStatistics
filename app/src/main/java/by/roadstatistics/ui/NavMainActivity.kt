@@ -160,9 +160,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     applicationContext
                 )
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //TODO("Not yet implemented")
             }
         }
     }
@@ -205,6 +203,8 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
     private fun askLocationPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), 1000)
     }
+
+
 
     override fun onPause() {
         getPreferences(MODE_PRIVATE).edit().apply {

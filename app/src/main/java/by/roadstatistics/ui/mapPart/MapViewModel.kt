@@ -23,19 +23,24 @@ class MapViewModel : ViewModel() {
                 val list = mutableListOf<User>()
                 for (ds in snapshot.children) {
                     for (ds2 in ds.children) {
-                        list.add(
-                            User(
-                                ds2.child("id").value.toString(),
-                                ds2.child("name").value.toString(),
-                                ds2.child("lat").value.toString(),
-                                ds2.child("lng").value.toString(),
+                        Log.i("FFFF", ds2.child("lat").value.toString().plus(" lat"))
+                        Log.i("FFFF", ds2.child("id").value.toString().plus(" id"))
+                        if (ds2.child("lat").value.toString() != "null" && ds2.child("id").value.toString() != "0") {
+                            list.add(
+                                User(
+                                    ds2.child("id").value.toString(),
+                                    ds2.child("name").value.toString(),
+                                    ds2.child("lat").value.toString(),
+                                    ds2.child("lng").value.toString(),
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 liveCordsMutablyLiveData.value = list
                 list.clear()
             }
+
             override fun onCancelled(error: DatabaseError) {
                 Log.i("FFFF", "Error from getLiveCordsFromFirebase() in FirebaseRepository")
             }

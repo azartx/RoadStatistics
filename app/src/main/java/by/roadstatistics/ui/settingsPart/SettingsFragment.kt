@@ -9,8 +9,8 @@ import by.roadstatistics.R
 import by.roadstatistics.adapters.SettingsSpinnerAdapter
 import by.roadstatistics.databinding.FragmentSettingsBinding
 import by.roadstatistics.utils.Constants.BACK_STACK_FRAGMENT_TITLE
-import by.roadstatistics.utils.Constants.MAP_LOOP
 import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
+import by.roadstatistics.utils.Constants.MAP_LOOP
 
 // настройки
 
@@ -83,8 +83,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 })
             viewModel.getYearList(view.context)
         }
-
-
     }
 
     private fun checkCurrentColor() {

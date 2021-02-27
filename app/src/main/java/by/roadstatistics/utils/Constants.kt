@@ -1,7 +1,8 @@
 package by.roadstatistics.utils
 
+import android.view.textclassifier.TextClassifierEvent
 import by.roadstatistics.R
-import java.util.Calendar
+import java.util.*
 
 /**
  * Class to storage the constants. Some constants in the onPause method is saving to sharedPreference
@@ -31,7 +32,7 @@ object Constants {
     const val COLOR_KEY = "color key"
 
     @JvmStatic
-    var APP_START_COUNT = 0
+    var APP_START_COUNT = 1
     var APP_START_COUNT_KEY = "app start count key"
 
     const val FIREBASE_DATABASE_KEY = "Users"
