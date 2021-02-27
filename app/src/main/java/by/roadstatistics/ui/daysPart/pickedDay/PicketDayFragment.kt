@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.databinding.FragmentPicketDayBinding
+import by.roadstatistics.utils.Constants
+import by.roadstatistics.utils.Constants.BACK_STACK_FRAGMENT_TITLE
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
 import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 import by.roadstatistics.utils.Constants.MAP_LOOP
@@ -139,6 +141,11 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
             polylineOptions.color(resources.getColor(CURRENT_POLYLINE_COLOR, null ))
             localMap.addPolyline(polylineOptions)
         }
+    }
+
+    override fun onPause() {
+        BACK_STACK_FRAGMENT_TITLE = getString(R.string.fr_picket_day)
+        super.onPause()
     }
 
 }

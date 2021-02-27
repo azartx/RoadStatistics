@@ -3,6 +3,7 @@ package by.roadstatistics.ui.daysPart
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ import by.roadstatistics.databinding.FragmentDaysListBinding
 import by.roadstatistics.ui.ActivityViewModel
 import by.roadstatistics.ui.NavMainActivity
 import by.roadstatistics.utils.AdapterToFragmentListener
+import by.roadstatistics.utils.Constants.BACK_STACK_FRAGMENT_TITLE
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
 import by.roadstatistics.utils.Constants.CURRENT_MONTH
 import by.roadstatistics.utils.Constants.CURRENT_YEAR
@@ -71,6 +73,12 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
                 daysViewModel.getDay(context, CURRENT_YEAR, CURRENT_MONTH, dayNumber)
             }
         }
+    }
+
+    override fun onPause() {
+        BACK_STACK_FRAGMENT_TITLE = getString(R.string.fr_one_days_list)
+        super.onPause()
+
     }
 
 }

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.roadstatistics.R
+import by.roadstatistics.utils.Constants.BACK_STACK_FRAGMENT_TITLE
 import by.roadstatistics.utils.Constants.MAP_LOOP
 import by.roadstatistics.utils.Constants.USER_ID
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -73,6 +74,11 @@ class MapGeneralFragment : Fragment(R.layout.fragment_map_root), OnMapReadyCallb
             })
             vmp.getLiveCords()
         }
+    }
+
+    override fun onPause() {
+        BACK_STACK_FRAGMENT_TITLE = getString(R.string.fr_map)
+        super.onPause()
     }
 
 }

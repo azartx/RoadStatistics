@@ -9,6 +9,9 @@ import java.util.Calendar
 
 object Constants {
 
+    @JvmStatic
+    var BACK_STACK_FRAGMENT_TITLE = ""
+
     const val FRAGMENT_PICKET_DAY = 4
 
     const val BUNDLE_KEY_PICKET_DAY_FRAGMENT = "list of day data"

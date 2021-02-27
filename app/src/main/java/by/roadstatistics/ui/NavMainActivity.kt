@@ -26,6 +26,7 @@ import by.roadstatistics.ui.settingsPart.SettingsFragment
 import by.roadstatistics.utils.ChangeFragmentListener
 import by.roadstatistics.utils.Constants.APP_START_COUNT
 import by.roadstatistics.utils.Constants.APP_START_COUNT_KEY
+import by.roadstatistics.utils.Constants.BACK_STACK_FRAGMENT_TITLE
 import by.roadstatistics.utils.Constants.COLOR_KEY
 import by.roadstatistics.utils.Constants.CURRENT_POLYLINE_COLOR
 import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
@@ -81,7 +82,8 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     initSpinner(spinner)
                     spinner.visibility = View.VISIBLE
                     supportFragmentManager.beginTransaction()
-                        .replace<DaysListFragment>(R.id.nav_host_fragment, "", null)
+                        .replace<DaysListFragment>(R.id.nav_host_fragment, "day_list", null)
+                        .addToBackStack(null)
                         .commit()
                     setToolbarTitle(getString(R.string.fr_one_days_list))
                     true
@@ -89,7 +91,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                 R.id.nav_map_global -> {
                     spinner.visibility = View.INVISIBLE
                     supportFragmentManager.beginTransaction()
-                        .replace<MapGeneralFragment>(R.id.nav_host_fragment, "", null)
+                        .replace<MapGeneralFragment>(R.id.nav_host_fragment, "global_map", null)
                         .addToBackStack(null)
                         .commit()
                     setToolbarTitle(getString(R.string.fr_map))
@@ -98,7 +100,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                 R.id.nav_settings -> {
                     spinner.visibility = View.INVISIBLE
                     supportFragmentManager.beginTransaction()
-                        .replace<SettingsFragment>(R.id.nav_host_fragment, "", null)
+                        .replace<SettingsFragment>(R.id.nav_host_fragment, "settings", null)
                         .addToBackStack(null)
                         .commit()
                     setToolbarTitle(getString(R.string.fr_settings))
@@ -193,7 +195,7 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                 spinner.visibility = View.INVISIBLE
                 supportFragmentManager.beginTransaction()
                     .replace<PicketDayFragment>(R.id.nav_host_fragment, "", bundle)
-                    .addToBackStack(null)
+                    .addToBackStack("picket_day")
                     .commit()
                 setToolbarTitle(getString(R.string.fr_picket_day))
             }
@@ -212,6 +214,11 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
             putString(USER_ID_KEY, USER_ID)
         }.apply()
         super.onPause()
+    }
+
+    override fun onBackPressed() {
+        setToolbarTitle(BACK_STACK_FRAGMENT_TITLE)
+        super.onBackPressed()
     }
 
 }
