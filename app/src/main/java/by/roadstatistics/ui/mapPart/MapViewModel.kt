@@ -18,27 +18,29 @@ class MapViewModel : ViewModel() {
     val liveCordsLiveData: LiveData<List<User>> = liveCordsMutablyLiveData
 
     fun getLiveCords() {
-
         val firebaseListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i("FFFF1", snapshot.value.toString())
                 val list = mutableListOf<User>()
                 for (ds in snapshot.children) {
                     for (ds2 in ds.children) {
-                        list.add(User(ds2.child("id").value.toString(), ds2.child("name").value.toString(), ds2.child("lat").value.toString(), ds2.child("lng").value.toString(),))
-                        Log.i("FFFF1", ds2.child("lat").value.toString())
+                        list.add(
+                            User(
+                                ds2.child("id").value.toString(),
+                                ds2.child("name").value.toString(),
+                                ds2.child("lat").value.toString(),
+                                ds2.child("lng").value.toString(),
+                            )
+                        )
                     }
                 }
                 liveCordsMutablyLiveData.value = list
                 list.clear()
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.i("FFFF", "Error from getLiveCordsFromFirebase() in FirebaseRepository")
             }
 
         }
         fireDatabase.root.addValueEventListener(firebaseListener)
-
     }
 }

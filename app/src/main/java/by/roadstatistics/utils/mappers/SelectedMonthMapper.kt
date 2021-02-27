@@ -1,10 +1,9 @@
-package by.roadstatistics.utils
+package by.roadstatistics.utils.mappers
 
 import android.content.Context
 import by.roadstatistics.R
 
 class SelectedMonthMapper(val context: Context) {
-
     fun getMonthNumber(month: String): Int = when (month) {
         context.getString(R.string.january) -> 1
         context.getString(R.string.february) -> 2
@@ -20,5 +19,4 @@ class SelectedMonthMapper(val context: Context) {
         context.getString(R.string.december) -> 12
         else -> 0
     }
-
 }

@@ -1,10 +1,9 @@
-package by.roadstatistics.utils
+package by.roadstatistics.utils.mappers
 
 import android.content.Context
 import by.roadstatistics.R
 
 class MonthMapper(var list: List<Int>, var context: Context) {
-
     fun monthsToString(): List<String> {
         val newList = mutableListOf<String>()
         for (month in list) {
@@ -12,7 +11,6 @@ class MonthMapper(var list: List<Int>, var context: Context) {
         }
         return newList
     }
-
     private fun map(month: Int): String = when (month) {
         1 -> context.getString(R.string.january)
         2 -> context.getString(R.string.february)
@@ -28,5 +26,4 @@ class MonthMapper(var list: List<Int>, var context: Context) {
         12 -> context.getString(R.string.december)
         else -> context.getString(R.string.no_months)
     }
-
 }

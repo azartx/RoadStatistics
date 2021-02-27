@@ -6,6 +6,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Data class about user, info.
+ */
+
 @Entity
 data class CordInfo(
     @ColumnInfo val year: Int,
@@ -15,7 +19,7 @@ data class CordInfo(
     @ColumnInfo val minutes: Int,
     @ColumnInfo val latitude: Float,
     @ColumnInfo val longitude: Float
-) : Parcelable  {
+) : Parcelable {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo
     var id: Int = 0

@@ -3,27 +3,21 @@ package by.roadstatistics.ui.daysPart
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.roadstatistics.R
 import by.roadstatistics.adapters.DaysListAdapter
-import by.roadstatistics.database.CordInfo
 import by.roadstatistics.databinding.FragmentDaysListBinding
 import by.roadstatistics.ui.ActivityViewModel
 import by.roadstatistics.ui.NavMainActivity
 import by.roadstatistics.utils.AdapterToFragmentListener
-import by.roadstatistics.utils.ChangeFragmentListener
 import by.roadstatistics.utils.Constants.BUNDLE_KEY_PICKET_DAY_FRAGMENT
 import by.roadstatistics.utils.Constants.CURRENT_MONTH
 import by.roadstatistics.utils.Constants.CURRENT_YEAR
 import by.roadstatistics.utils.Constants.FRAGMENT_PICKET_DAY
 import java.util.ArrayList
-
-// спикос на основе ресайклера с днями и выбором месяца
 
 class DaysListFragment : Fragment(R.layout.fragment_days_list) {
 
@@ -43,7 +37,6 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
             it.getMonthIntLiveData.observe(viewLifecycleOwner, { month ->
                 CURRENT_MONTH = month
                 thisViewModelProvider.get(DaysViewModel::class.java).also { daysViewModel ->
-                    // обработка нажатия на элемент recyclerView
                     pickSomeDay(daysViewModel, view.context)
                     daysViewModel.dayLiveData.observe(viewLifecycleOwner, { daysOfMonthList ->
                         createRecyclerViewAdapter(daysOfMonthList)
@@ -55,7 +48,6 @@ class DaysListFragment : Fragment(R.layout.fragment_days_list) {
     }
 
     private fun createRecyclerViewAdapter(daysOfMonthList: List<Int>) {
-
         localAdapter = DaysListAdapter(adapterToFragmentListener)
         binding.recyclerView.apply {
             adapter = localAdapter

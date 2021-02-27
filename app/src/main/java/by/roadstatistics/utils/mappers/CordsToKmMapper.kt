@@ -1,9 +1,7 @@
-package by.roadstatistics.utils
+package by.roadstatistics.utils.mappers
 
 import android.location.Location
 import by.roadstatistics.database.CordInfo
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 
 class CordsToKmMapper {
     fun latLonToDistance(list: ArrayList<CordInfo>): Double {

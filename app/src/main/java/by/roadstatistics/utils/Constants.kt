@@ -1,13 +1,14 @@
 package by.roadstatistics.utils
 
 import by.roadstatistics.R
-import java.util.*
+import java.util.Calendar
+
+/**
+ * Class to storage the constants. Some constants in the onPause method is saving to sharedPreference
+ */
 
 object Constants {
 
-    const val FRAGMENT_DAYS_LIST = 1
-    const val FRAGMENT_MAP_GENERAL = 2
-    const val FRAGMENT_SETTINGS = 3
     const val FRAGMENT_PICKET_DAY = 4
 
     const val BUNDLE_KEY_PICKET_DAY_FRAGMENT = "list of day data"
@@ -30,11 +31,10 @@ object Constants {
     var APP_START_COUNT = 0
     var APP_START_COUNT_KEY = "app start count key"
 
-    const val FIREBASE_DATABASE_USER_KEY = "fdb user key"
+    const val FIREBASE_DATABASE_KEY = "Users"
 
     @JvmStatic
     var USER_ID = "0"
     const val USER_ID_KEY = "user id key"
-
 
 }

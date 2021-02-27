@@ -33,9 +33,13 @@ import by.roadstatistics.utils.Constants.MAP_LOOP
 import by.roadstatistics.utils.Constants.MAP_LOOP_KEY
 import by.roadstatistics.utils.Constants.USER_ID
 import by.roadstatistics.utils.Constants.USER_ID_KEY
-import by.roadstatistics.utils.MonthMapper
+import by.roadstatistics.utils.mappers.MonthMapper
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 
 class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
@@ -61,11 +65,8 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         Log.i("FFFF", "APP_START_COUNT = $APP_START_COUNT")
 
         askLocationPermission()
-
         initSpinner(spinner)
-
         startService(Intent(this, LocService::class.java))
-
         beginFirstFragment()
 
         if (APP_START_COUNT == 1) {
@@ -111,11 +112,12 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
 
     private fun login() {
         val itemDialogBinding: ItemLoginDialogBinding = ItemLoginDialogBinding.inflate(
-            LayoutInflater.from(this))
+            LayoutInflater.from(this)
+        )
         AlertDialog.Builder(this).apply {
             setView(itemDialogBinding.root)
-            setTitle("First run")
-            setPositiveButton("Okay") { _, _ ->
+            setTitle(getString(R.string.title))
+            setPositiveButton(getString(R.string.okay)) { _, _ ->
                 if (itemDialogBinding.namePoolEditText.text.toString().isNotEmpty()) {
 
                     val lastQuery: Query = fireDatabase.child("Users").orderByKey().limitToLast(1)
@@ -123,14 +125,16 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             for (ds in dataSnapshot.children) {
                                 USER_ID = ds.child("id").value.toString()
-                                Log.i("FFFF1", ds.child("id").value.toString())
-                                Log.i("FFFF1", "Error, reboot app plz $USER_ID")
-                                FirebaseRepository().putUserDoDatabase(ds.child("id").value.toString(), itemDialogBinding.namePoolEditText.text.toString())
+                                FirebaseRepository().putUserDoDatabase(
+                                    ds.child("id").value.toString(),
+                                    itemDialogBinding.namePoolEditText.text.toString()
+                                )
                                 ++APP_START_COUNT
                             }
                         }
+
                         override fun onCancelled(databaseError: DatabaseError) {
-                            Log.i("FFFF", "Error, reboot app plz")
+                            Log.i("FFFF", "Error, firebase is cancelled in Main Activity/login")
                         }
                     })
                 }
@@ -153,7 +157,6 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
                     parent?.getItemAtPosition(position).toString(),
                     applicationContext
                 )
-                Log.i("FFFF", parent?.getItemAtPosition(position).toString() + " yesss")
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -210,4 +213,5 @@ class NavMainActivity : AppCompatActivity(), ChangeFragmentListener {
         }.apply()
         super.onPause()
     }
+
 }

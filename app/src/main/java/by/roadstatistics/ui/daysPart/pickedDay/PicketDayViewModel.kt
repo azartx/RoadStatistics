@@ -1,14 +1,13 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
-import by.roadstatistics.utils.CordsToKmMapper
+import by.roadstatistics.utils.mappers.CordsToKmMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,6 +16,10 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.Locale
+
+/**
+ * надо доделать этот класс, что то не так с потоком..
+ */
 
 class PicketDayViewModel : ViewModel() {
 

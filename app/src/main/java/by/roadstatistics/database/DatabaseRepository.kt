@@ -1,7 +1,11 @@
 package by.roadstatistics.database
 
 import android.content.Context
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DatabaseRepository(context: Context) {
 
@@ -50,6 +54,5 @@ class DatabaseRepository(context: Context) {
     fun closeDatabase() {
         database.close()
     }
-
 
 }

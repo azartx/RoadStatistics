@@ -11,33 +11,37 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkInfo
-import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Binder
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.*
+import androidx.core.app.NotificationCompat.VISIBILITY_PRIVATE
+import androidx.core.app.NotificationCompat.Builder
+import androidx.core.app.NotificationCompat.CATEGORY_SERVICE
+import androidx.core.app.NotificationCompat.BigTextStyle
+import androidx.core.app.NotificationCompat.PRIORITY_MAX
+import androidx.core.app.NotificationCompat.CATEGORY_MESSAGE
+import androidx.core.app.NotificationCompat.PRIORITY_MIN
 import androidx.core.content.ContextCompat
 import by.roadstatistics.R
 import by.roadstatistics.database.CordInfo
 import by.roadstatistics.database.DatabaseRepository
 import by.roadstatistics.database.firebase.FirebaseRepository
 import by.roadstatistics.utils.Constants.USER_ID
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.lang.NullPointerException
 import java.net.InetAddress
 import java.util.Calendar
-import java.util.concurrent.Executors
+
+/**
+ * Custom location service, catch all of the user cords and send to database repository
+ */
 
 class LocService : Service() {
 
@@ -45,7 +49,7 @@ class LocService : Service() {
     private lateinit var locationProvider: FusedLocationProviderClient
     private lateinit var databaseRepository: DatabaseRepository
     private val cal = Calendar.getInstance()
-    private val CHANNEL_ID = "myChannel"
+    private val channelId = "myChannel"
     private val firebaseRepository = FirebaseRepository()
 
     override fun onCreate() {
@@ -56,41 +60,9 @@ class LocService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         showServiceNotification()
         databaseRepository = DatabaseRepository(baseContext)
-
         CoroutineScope(Dispatchers.Main + Job()).launch {
             withContext(Dispatchers.Unconfined) {
                 getCordsLogic()
-
-
-                /*while (true) {
-                    if (checkLocationPermission()) {
-                        locationProvider =
-                            LocationServices.getFusedLocationProviderClient(baseContext)
-                        locationProvider.lastLocation.addOnCompleteListener { location ->
-
-                            val cal = Calendar.getInstance()
-                            var lat = location.result.latitude.toFloat()
-                            var lon = location.result.longitude.toFloat()
-
-                            databaseRepository = DatabaseRepository(baseContext)
-                            databaseRepository.addCordsToDatabase(
-                                CordInfo(
-                                    year = cal.get(Calendar.YEAR),
-                                    month = cal.get(Calendar.MONTH) + 1,
-                                    day = cal.get(Calendar.DAY_OF_MONTH),
-                                    hours = cal.get(Calendar.HOUR_OF_DAY),
-                                    minutes = cal.get(Calendar.MINUTE),
-                                    latitude = lat,
-                                    longitude = lon
-                                )
-                            )
-
-
-                        }
-                    }
-                    delay(5000)
-                }*/
-
             }
         }
         return START_STICKY
@@ -99,7 +71,6 @@ class LocService : Service() {
     private fun getCordsLogic() {
         if (checkLocationPermission()) {
             // этот вызов отработает раз, добавит координат сразу
-
             try {
                 locationProvider =
                     LocationServices.getFusedLocationProviderClient(baseContext)
@@ -123,10 +94,9 @@ class LocService : Service() {
                 Log.i("LOG", "NPE: provider has no cords. Exception log:\n$e")
             }
 
-
             // этот вызов будет писать в базу по изменению локации
             val los = getSystemService(LOCATION_SERVICE) as LocationManager
-            if (checkInternetConnection() && checkGpsIsOn()) {
+            if (/*checkInternetConnection() && checkGpsIsOn()*/true) {
                 los.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5F) { loc ->
                     databaseRepository.addCordsToDatabase(
                         CordInfo(
@@ -139,7 +109,9 @@ class LocService : Service() {
                             longitude = loc.longitude.toFloat()
                         )
                     )
-
+                    if (USER_ID != "0") {
+                        firebaseRepository.updateChildren(loc.latitude, loc.longitude)
+                    }
 
                 }
             } else if (checkInternetConnection() && !checkGpsIsOn()) {
@@ -159,6 +131,9 @@ class LocService : Service() {
                             longitude = loc.longitude.toFloat()
                         )
                     )
+                    if (USER_ID != "0") {
+                        firebaseRepository.updateChildren(loc.latitude, loc.longitude)
+                    }
                 }
             } else if (!checkInternetConnection()) {
                 //showLostInternetNotification()
@@ -170,7 +145,7 @@ class LocService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
-                CHANNEL_ID,
+                channelId,
                 getString(R.string.notification_location_name),
                 IMPORTANCE_NONE
             ).apply {
@@ -182,8 +157,9 @@ class LocService : Service() {
         }
     }
 
+    // general service notification
     private fun showServiceNotification() {
-        Builder(baseContext, CHANNEL_ID)
+        Builder(baseContext, channelId)
             .setContentTitle(getString(R.string.notificationLocationTitle))
             .setContentText(getString(R.string.notification_location_description))
             .setSmallIcon(R.drawable.ic_notif_small)
@@ -202,8 +178,9 @@ class LocService : Service() {
             }
     }
 
+    // if internet connection is lost, then this notification is show
     private fun showLostInternetNotification() {
-        Builder(baseContext, CHANNEL_ID)
+        Builder(baseContext, channelId)
             .setContentTitle(getString(R.string.notificationLostInternetConnectionTitle))
             .setContentText(getString(R.string.notificationLostInternetConnection))
             .setCategory(CATEGORY_MESSAGE)
@@ -214,6 +191,7 @@ class LocService : Service() {
                 startForeground(102, this)
             }
 
+        // checking internet connection again loop
         do {
             if (checkInternetConnection()) {
                 getSystemService(NOTIFICATION_SERVICE).apply {
@@ -224,20 +202,17 @@ class LocService : Service() {
                 break
             }
         } while (!checkInternetConnection())
-
-
     }
 
+    // attention, main thread!
     private fun checkInternetConnection(): Boolean {
-        /*return try {
+        return try {
             val checkConnection = InetAddress.getByName("https://google.com/")
             checkConnection.equals("")
         } catch (e: Exception) {
-            Log.i("FFFF", e.toString())
+            Log.i("FFFF", "Check internet loop catch next exception: $e")
             false
-        }*/
-        return true
-
+        }
     }
 
     private fun checkGpsIsOn(): Boolean {
@@ -249,8 +224,8 @@ class LocService : Service() {
         ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
 
     override fun onBind(intent: Intent?): IBinder = bindService
-    inner class BindService() : Binder() {
-        // TODO Some code
+    inner class BindService : Binder() {
+        // if need to call service into the activity on some els, need to use this class
     }
 
 }

@@ -1,9 +1,6 @@
 package by.roadstatistics.ui.daysPart.pickedDay
 
-import android.content.res.Resources
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +17,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+
+/**
+ * This fragment show to user info about the selected day.
+ */
 
 class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCallback {
 
@@ -44,20 +41,12 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        initMap(googleMap)
-
-
+        initMap(googleMap) // set base map settings
         createStartEndMarkers()
         createPolyline()
-
-
-
-
-
     }
 
     private fun initMap(googleMap: GoogleMap) {
@@ -76,7 +65,6 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
     }
 
     private fun createStartEndMarkers() {
-
             picketDayViewModelProvider.get(PicketDayViewModel::class.java).also { vm ->
                 vm.startCordsAddressLiveData.observe(viewLifecycleOwner, { address ->
                     makeStartMarker(address)
@@ -85,7 +73,7 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
                     makeEndMarker(address)
                 })
                 vm.distanceLiveData.observe(viewLifecycleOwner, { distance ->
-                    binding.text1.text = "$distance Km"
+                    binding.text1.text = distance.plus(getString(R.string.km_distance))
                 })
                 vm.getStartCordAddress(
                     requireContext(),
@@ -98,9 +86,7 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
                     dayInfoList[dayInfoList.size - 1].longitude.toDouble()
                 )
                 vm.getDistance(dayInfoList)
-
         }
-
     }
 
     private fun makeStartMarker(address: String) {
@@ -131,6 +117,9 @@ class PicketDayFragment : Fragment(R.layout.fragment_picket_day), OnMapReadyCall
         }
     }
 
+    /**
+     * this method create polyline using "for" loop. This loop connects lines to each other.
+     */
     private fun createPolyline() {
         PolylineOptions().also { polylineOptions ->
             var lat = 0.0

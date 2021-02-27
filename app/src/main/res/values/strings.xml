@@ -40,4 +40,8 @@
     <string name="notificationLostInternetConnectionTitle">Internet Connection is lost :(</string>
     <string name="notification_large_description">If you turn off this notification, app can\'t work correct.</string>
     <string name="name_pool">Name pool</string>
+    <string name="okay">Okay</string>
+    <string name="title">First run</string>
+    <string name="day_day_list">Day </string>
+    <string name="km_distance">\" Km\"</string>
 </resources>
