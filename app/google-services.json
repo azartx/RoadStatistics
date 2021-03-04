@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "42556860438",
+    "project_id": "poised-graph-304109",
+    "storage_bucket": "poised-graph-304109.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42556860438:android:aed33f735b44f9e207ed37",
+        "android_client_info": {
+          "package_name": "by.roadstatistics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "42556860438-6boq74vsr03s8bam1dih96l6h385tmos.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD16Dfb_BRkbum8m0cb6AErfkr89bmAG_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "42556860438-6boq74vsr03s8bam1dih96l6h385tmos.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
